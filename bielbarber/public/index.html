@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>Biel Cortes — Urban Premium Barber</title>
+  <meta name="description" content="Biel Cortes. Estilo, atitude e confiança. Agende seu horário com o Biel diretamente pela plataforma online.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="assets/img/logo_refined.webp">
+  
+  <!-- Fontes Oficiais: Oswald (Display) & Inter (UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Oficial Urban Premium Barber -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- =======================================================================
+       1. CABEÇALHO GLOBAL (LAYER 1: TRANSPARENTE SOBRE A FOTO NO MOBILE)
+       ======================================================================= -->
+  <header class="main-header" id="main-header">
+    <div class="header-inner container">
+      <!-- Brand Logo + Nome -->
+      <a href="#hero" class="header-brand" aria-label="Biel Cortes Página Inicial">
+        <picture>
+          <source srcset="assets/img/logo_refined.webp" type="image/webp">
+          <img src="assets/img/logo_refined.webp" alt="Logo Biel Cortes" class="header-logo" width="34" height="34">
+        </picture>
+        <span class="header-brand-title">BIEL CORTES</span>
+      </a>
+
+      <!-- Navegação Desktop -->
+      <nav class="desktop-nav" aria-label="Navegação principal">
+        <a href="#hero" class="desktop-nav-link active">Início</a>
+        <a href="#servicos" class="desktop-nav-link">Serviços</a>
+        <a href="#galeria" class="desktop-nav-link">Galeria</a>
+        <a href="#sobre" class="desktop-nav-link">Sobre</a>
+      </nav>
+
+      <!-- Ações do Cabeçalho -->
+      <div class="header-actions">
+        <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer" class="header-wa-btn" aria-label="Falar no WhatsApp" title="WhatsApp Oficial">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span class="header-wa-text">Falar no WhatsApp</span>
+        </a>
+        <button class="btn-primary header-cta-btn" id="btn-header-agendar" type="button">
+          Agendar Horário
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =======================================================================
+       2. HERO SECTION — CARROSSEL CINEMATOGRÁFICO AUTOMÁTICO & APP ONBOARDING
+       ======================================================================= -->
+  <section class="hero-section" id="hero">
+    <!-- LAYER 2: Carrossel Cinematográfico Automático de Fotografias (Transição Fade) -->
+    <div class="hero-carousel-container" id="hero-carousel" aria-label="Carrossel cinematográfico de cortes" role="region">
+      <div class="hero-carousel-slides">
+        <!-- Slide 1: Acabamento na Navalha & Barba (Alta Prioridade) -->
+        <div class="hero-carousel-slide active" data-slide-index="0" role="group" aria-roledescription="slide" aria-label="1 de 3: Acabamento na Navalha">
+          <picture>
+            <source srcset="assets/img/hero_barber.webp" type="image/webp">
+            <img src="assets/img/hero_barber.jpg" alt="Barbeiro realizando acabamento com navalha e visagismo" class="hero-slide-img" width="500" height="360" fetchpriority="high">
+          </picture>
+        </div>
+
+        <!-- Slide 2: Degradê Fade na Régua -->
+        <div class="hero-carousel-slide" data-slide-index="1" role="group" aria-roledescription="slide" aria-label="2 de 3: Corte Degradê Fade">
+          <picture>
+            <source srcset="assets/img/hero_slide_fade.webp" type="image/webp">
+            <img src="assets/img/hero_slide_fade.jpg" alt="Corte Degradê Fade masculino de alta precisão" class="hero-slide-img" width="500" height="360" loading="lazy">
+          </picture>
+        </div>
+
+        <!-- Slide 3: Estilização & Corte Moderno -->
+        <div class="hero-carousel-slide" data-slide-index="2" role="group" aria-roledescription="slide" aria-label="3 de 3: Estilização e Corte Moderno">
+          <picture>
+            <source srcset="assets/img/hero_slide_style.webp" type="image/webp">
+            <img src="assets/img/hero_slide_style.jpg" alt="Corte masculino moderno com finalização profissional" class="hero-slide-img" width="500" height="360" loading="lazy">
+          </picture>
+        </div>
+      </div>
+
+      <!-- Degradê Escuro Integrado na Base da Foto (Funde com #0D0D0D sem escurecer os cortes) -->
+      <div class="hero-carousel-gradient-overlay" aria-hidden="true"></div>
+    </div>
+
+    <!-- LAYER 3: Conteúdo Principal (Inferior Mobile / Coluna Esquerda Desktop) -->
+    <div class="container hero-container">
+      <div class="hero-content">
+        <!-- 1. Indicador de Progresso Interativo do Carrossel (3 Segmentos, 1º Ativo em Laranja #F39200) -->
+        <div class="hero-progress-bar" role="tablist" aria-label="Controle de slides da apresentação">
+          <button class="hero-progress-seg active" data-slide="0" role="tab" aria-selected="true" aria-label="Slide 1: Acabamento na Navalha"></button>
+          <button class="hero-progress-seg" data-slide="1" role="tab" aria-selected="false" aria-label="Slide 2: Degradê Fade"></button>
+          <button class="hero-progress-seg" data-slide="2" role="tab" aria-selected="false" aria-label="Slide 3: Estilização Moderna"></button>
+        </div>
+
+        <!-- Tag de Posicionamento (Desktop) -->
+        <div class="hero-badge desktop-only-badge">
+          <span class="badge-dot"></span>
+          <span>ESTÉTICA URBANA &bull; ATENDIMENTO EXCLUSIVO</span>
+        </div>
+
+        <!-- 2. Título Principal Oficial (Oswald Caixa Alta) -->
+        <h1 class="hero-headline">SEU PRÓXIMO CORTE COMEÇA AQUI.</h1>
+        
+        <!-- 3. Texto de Apoio Oficial (Inter Cinza Claro) -->
+        <p class="hero-subheadline">
+          Encontre seu próximo estilo e agende seu horário com o Biel de forma rápida e fácil.
+        </p>
+
+        <!-- 4. Botão Principal & Ações -->
+        <div class="hero-actions-row">
+          <a href="#servicos" class="hero-btn-conhecer" id="btn-hero-servicos">
+            <span class="hero-btn-conhecer-text">Conhecer serviços</span>
+            <svg class="hero-btn-conhecer-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <button class="btn-secondary hero-btn-sub desktop-only-btn" id="btn-hero-agendar" type="button">
+            <span>Agendar horário</span>
+          </button>
+        </div>
+
+        <!-- Diferenciais Premium (Desktop e Telas Maiores) -->
+        <div class="hero-benefits desktop-only-benefits">
+          <div class="benefit-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Pontualidade Britânica</span>
+          </div>
+          <div class="benefit-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Barbeiro Único</span>
+          </div>
+          <div class="benefit-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span>Zero Fila de Espera</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna da Fotografia em Destaque (Desktop Expandido com Carrossel Sincronizado) -->
+      <div class="hero-desktop-visual" aria-hidden="true">
+        <div class="hero-photo-frame">
+          <div class="hero-desktop-carousel-slides">
+            <div class="hero-desktop-slide active" data-desktop-slide="0">
+              <picture>
+                <source srcset="assets/img/hero_barber.webp" type="image/webp">
+                <img src="assets/img/hero_barber.jpg" alt="Barbeiro Biel em atendimento" class="hero-desktop-photo-img" width="500" height="360" loading="eager">
+              </picture>
+            </div>
+            <div class="hero-desktop-slide" data-desktop-slide="1">
+              <picture>
+                <source srcset="assets/img/hero_slide_fade.webp" type="image/webp">
+                <img src="assets/img/hero_slide_fade.jpg" alt="Corte Degradê Fade" class="hero-desktop-photo-img" width="500" height="360" loading="lazy">
+              </picture>
+            </div>
+            <div class="hero-desktop-slide" data-desktop-slide="2">
+              <picture>
+                <source srcset="assets/img/hero_slide_style.webp" type="image/webp">
+                <img src="assets/img/hero_slide_style.jpg" alt="Estilização e acabamento" class="hero-desktop-photo-img" width="500" height="360" loading="lazy">
+              </picture>
+            </div>
+          </div>
+          <div class="hero-desktop-photo-overlay"></div>
+          <div class="hero-photo-badge">
+            <span class="photo-badge-label">Barbeiro Biel</span>
+            <span class="photo-badge-sub" id="hero-desktop-badge-label">Visagismo &amp; Navalha</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       3. SEÇÃO DE SERVIÇOS (ESCOLHA SEU ESTILO)
+       ======================================================================= -->
+  <section class="section-block section-alt" id="servicos">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">ESCOLHA SEU ESTILO</span>
+          <h2 class="section-title">TODOS OS SERVIÇOS</h2>
+          <p class="section-subtitle">Selecione um ou mais serviços para calcular o tempo total e agendar.</p>
+        </div>
+      </div>
+
+      <!-- Filtros por Categoria Interativos -->
+      <div class="category-filter-bar" id="category-filter-bar" role="tablist" aria-label="Filtrar por categoria">
+        <button class="filter-pill active" data-category="todos" role="tab" aria-selected="true">Todos</button>
+        <button class="filter-pill" data-category="cortes" role="tab" aria-selected="false">Cortes</button>
+        <button class="filter-pill" data-category="barba" role="tab" aria-selected="false">Barba</button>
+        <button class="filter-pill" data-category="quimica" role="tab" aria-selected="false">Química</button>
+        <button class="filter-pill" data-category="combos" role="tab" aria-selected="false">Combos</button>
+      </div>
+
+      <!-- Barra de Busca -->
+      <div class="services-search-wrapper">
+        <div class="search-input-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-field" id="services-search-input" placeholder="Buscar por corte, barba, fade..." aria-label="Buscar serviço">
+        </div>
+      </div>
+
+      <!-- Grid de Serviços (Cards Fluidos com Imagens e Seletores) -->
+      <div class="services-catalog-grid" id="services-catalog-container">
+        <!-- Injetado dinamicamente via app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       5. GALERIA DE CORTES REAIS DO BIEL
+       ======================================================================= -->
+  <section class="section-block" id="galeria">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="section-tag">PORTFÓLIO RECENTE</span>
+          <h2 class="section-title">GALERIA DE CORTES</h2>
+          <p class="section-subtitle">Confira alguns dos trabalhos executados pelo Biel na barbearia.</p>
+        </div>
+        <a href="https://instagram.com/bielcortes_oficial" target="_blank" rel="noopener noreferrer" class="section-header-link">Instagram oficial &rarr;</a>
+      </div>
+
+      <div class="gallery-responsive-grid" id="gallery-container">
+        <!-- Injetado dinamicamente via app.js -->
+      </div>
+
+      <!-- Card Destaque Instagram -->
+      <div class="instagram-banner-box">
+        <div class="instagram-banner-content">
+          <span class="instagram-badge">@BIELCORTES_OFICIAL</span>
+          <h3 class="instagram-title">ACOMPANHE O DIA A DIA NO INSTAGRAM</h3>
+          <p class="instagram-desc">Novos cortes, vídeos de transformações e técnicas de degradê publicadas semanalmente.</p>
+        </div>
+        <a href="https://instagram.com/bielcortes_oficial" target="_blank" rel="noopener noreferrer" class="btn-primary instagram-cta-btn">
+          <span>Seguir no Instagram</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       6. SOBRE O BIEL & LOCALIZAÇÃO
+       ======================================================================= -->
+  <section class="section-block section-alt" id="sobre">
+    <div class="container">
+      <div class="about-grid-desktop">
+        <!-- Sobre o Profissional -->
+        <div class="about-card-box">
+          <div class="about-card-header">
+            <picture>
+              <source srcset="assets/img/logo_refined.webp" type="image/webp">
+              <img src="assets/img/logo_refined.webp" alt="Biel Cortes" class="about-avatar-img" width="60" height="60">
+            </picture>
+            <div>
+              <span class="about-role">Barbeiro &bull; Visagista</span>
+              <h3 class="about-name">GABRIEL (BIEL)</h3>
+            </div>
+          </div>
+          <div class="about-card-body">
+            <p>
+              A <strong>Biel Cortes</strong> rompe com o clichê rústico tradicional e abraça a cultura urbana contemporânea e o minimalismo noturno.
+            </p>
+            <p>
+              Aqui você tem atendimento <strong>100% individualizado com o Biel</strong>, pontualidade britânica com zero fila e acabamento com toalha morna e lâmina precisa.
+            </p>
+          </div>
+        </div>
+
+        <!-- Localização & Horários -->
+        <div class="location-card-box">
+          <h3 class="location-title">ONDE ESTAMOS & EXPEDIENTE</h3>
+          <div class="location-info-list">
+            <div class="location-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div>
+                <strong>Endereço:</strong>
+                <p>Rua Augusta, 1500 &bull; Consolação, São Paulo - SP</p>
+                <span class="location-sub">Próximo ao metrô | Vagas de estacionamento</span>
+              </div>
+            </div>
+
+            <div class="location-row">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <div>
+                <strong>Horário de Funcionamento:</strong>
+                <p>Segunda a Sábado das 09:00 às 19:00</p>
+                <span class="location-sub">Domingos e feriados fechado para descanso</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary btn-block" id="btn-location-agendar" type="button" style="margin-top: 16px;">
+            Agendar Horário com o Biel
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================================
+       7. RODAPÉ INSTITUCIONAL
+       ======================================================================= -->
+  <footer class="main-footer">
+    <div class="container footer-container">
+      <div class="footer-brand-wrap">
+        <picture>
+          <source srcset="assets/img/logo_refined.webp" type="image/webp">
+          <img src="assets/img/logo_refined.webp" alt="Logo Biel Cortes" width="34" height="34">
+        </picture>
+        <span class="footer-brand-title">BIEL CORTES</span>
+      </div>
+      <p class="footer-tagline">"Estilo, atitude e confiança."</p>
+      <p class="footer-copy">&copy; 2026 Biel Cortes. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- =======================================================================
+       8. BARRA FLUTUANTE DE SELEÇÃO (CHECKOUT RÁPIDO — APENAS APÓS SELEÇÃO)
+       ======================================================================= -->
+  <div class="floating-selection-bar" id="floating-selection-bar" style="display: none;" aria-hidden="true">
+    <div class="floating-bar-info">
+      <span class="floating-bar-count" id="floating-bar-count">0 serviço selecionado</span>
+      <div class="floating-bar-price" id="floating-bar-price">R$ 0,00</div>
+    </div>
+    <button class="btn-primary floating-bar-btn" id="btn-open-booking-modal" type="button">
+      <span>Continuar Agendamento</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+
+  <!-- =======================================================================
+       9. MODAL BOTTOM SHEET — FLUXO DE AGENDAMENTO
+       ======================================================================= -->
+  <div class="modal-overlay" id="booking-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-sheet" id="booking-modal-sheet">
+      <div class="modal-drag-handle"></div>
+
+      <div class="modal-header">
+        <h3 class="modal-title">CONFIRMAR HORÁRIO</h3>
+        <button class="modal-close-btn" id="btn-close-modal" aria-label="Fechar janela">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Resumo dos Serviços -->
+      <div class="booking-summary-box">
+        <div class="summary-item-row">
+          <span style="color: var(--color-gray);">Serviço:</span>
+          <strong id="modal-service-name" style="color: var(--color-ice); text-align: right;">Corte Masculino</strong>
+        </div>
+        <div class="summary-item-row">
+          <span style="color: var(--color-gray);">Duração estimada:</span>
+          <span id="modal-service-duration" style="color: var(--color-ice);">45 min</span>
+        </div>
+        <div class="summary-item-row total">
+          <span>Total:</span>
+          <span id="modal-service-price">R$ 45,00</span>
+        </div>
+      </div>
+
+      <!-- Escolha de Data -->
+      <div class="form-group">
+        <label class="form-label" for="booking-date-input">1. Escolha a data</label>
+        <input type="date" class="form-input" id="booking-date-input" required>
+      </div>
+
+      <!-- Grade de Horários -->
+      <div class="form-group">
+        <label class="form-label">2. Escolha o horário</label>
+        <div class="time-slots-grid" id="modal-time-slots">
+          <!-- Gerado dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Dados do Cliente -->
+      <div class="form-group">
+        <label class="form-label" for="client-name-input">3. Seu Nome Completo</label>
+        <input type="text" class="form-input" id="client-name-input" placeholder="Ex: Roberto Silva" required autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="client-phone-input">4. Seu WhatsApp com DDD</label>
+        <input type="tel" class="form-input" id="client-phone-input" placeholder="(11) 99999-9999" required autocomplete="tel">
+      </div>
+
+      <button class="btn-primary" id="btn-confirm-appointment" type="button" style="margin-top: 8px;">
+        <span>Enviar e Confirmar no WhatsApp</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </button>
+
+      <p style="font-size: 0.78rem; text-align: center; color: var(--color-gray); margin-top: 4px;">
+        Atendimento exclusivo com hora marcada diretamente com o Biel.
+      </p>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       10. BARRA DE NAVEGAÇÃO INFERIOR EXCLUSIVA DO MOBILE
+       (Ocultada automaticamente no Desktop via Media Query)
+       ======================================================================= -->
+  <nav class="bottom-nav" id="bottom-navigation" aria-label="Navegação móvel">
+    <a href="#hero" class="nav-tab-item active" data-tab="hero" aria-label="Início">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="nav-tab-label">Início</span>
+    </a>
+
+    <a href="#servicos" class="nav-tab-item" data-tab="servicos" aria-label="Serviços">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+      <span class="nav-tab-label">Serviços</span>
+    </a>
+
+    <a href="#galeria" class="nav-tab-item" data-tab="galeria" aria-label="Galeria">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span class="nav-tab-label">Galeria</span>
+    </a>
+
+    <button class="nav-tab-item" id="btn-bottom-agendar" type="button" aria-label="Agendar">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span class="nav-tab-label">Agendar</span>
+    </button>
+  </nav>
+
+  <!-- Toast de Notificações -->
+  <div class="app-toast" id="app-toast" role="alert" aria-live="assertive"></div>
+
+  <!-- Scripts Oficiais -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

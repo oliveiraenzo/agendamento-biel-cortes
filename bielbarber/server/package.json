@@ -1,0 +1,20 @@
+{
+  "name": "biel-cortes-api",
+  "version": "1.0.0",
+  "description": "API de agendamentos para barbearia Biel Cortes",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["barbearia", "booking", "express", "mongodb"],
+  "author": "Biel Cortes",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.0"
+  }
+}
+
