@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BIEL CORTES — PAINEL ADMIN STYLES
+   BIEL CORTES — PAINEL ADMIN STYLES (MOBILE-FIRST APP EXPERIENCE)
    Design System Urban Premium: #0D0D0D, #191919, #F39200, #F5F5F5
    ========================================================================== */
 
@@ -8,19 +8,19 @@
   color: var(--color-ice);
   font-family: var(--font-body);
   min-height: 100vh;
-  padding-bottom: 60px;
+  padding-bottom: 90px; /* Espaço para a barra inferior no mobile */
 }
 
-/* Header Admin */
+/* Header Admin Mobile */
 .admin-navbar {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(13, 13, 13, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(13, 13, 13, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--color-border);
-  padding: 14px 20px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -29,52 +29,52 @@
 .admin-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
 }
 
 .admin-brand img {
-  width: 38px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   border: 1px solid rgba(243, 146, 0, 0.3);
 }
 
 .admin-brand-info h1 {
   font-family: var(--font-title);
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   letter-spacing: 0.05em;
   color: var(--color-ice);
   margin: 0;
-  line-height: 1.2;
+  line-height: 1.1;
 }
 
 .admin-brand-info span {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--color-orange);
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.08em;
 }
 
 .admin-nav-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .btn-nav-site {
-  background: transparent;
+  background: #191919;
   color: var(--color-gray);
   border: 1px solid var(--color-border);
-  padding: 8px 14px;
+  padding: 7px 10px;
   border-radius: var(--radius-btn);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   text-decoration: none;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   transition: all 0.2s ease;
 }
 
@@ -84,23 +84,18 @@
 }
 
 .btn-logout {
-  background: rgba(255, 71, 87, 0.12);
+  background: rgba(255, 71, 87, 0.1);
   color: #ff6b81;
-  border: 1px solid rgba(255, 71, 87, 0.3);
-  padding: 8px 12px;
+  border: 1px solid rgba(255, 71, 87, 0.25);
+  padding: 7px 10px;
   border-radius: var(--radius-btn);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   transition: all 0.2s;
-}
-
-.btn-logout:hover {
-  background: rgba(255, 71, 87, 0.25);
-  border-color: var(--color-error);
 }
 
 /* Telas / Views */
@@ -112,13 +107,13 @@
   display: block;
 }
 
-/* Tela de Login */
+/* Tela de Login Mobile */
 .admin-login-screen {
   min-height: 80vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 16px;
 }
 
 .admin-login-card {
@@ -126,16 +121,16 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   width: 100%;
-  max-width: 400px;
-  padding: 32px 24px;
+  max-width: 380px;
+  padding: 28px 20px;
   text-align: center;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
 }
 
 .admin-login-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 16px;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 14px;
   background: rgba(243, 146, 0, 0.1);
   border: 1px solid rgba(243, 146, 0, 0.3);
   border-radius: 50%;
@@ -147,60 +142,69 @@
 
 .admin-login-title {
   font-family: var(--font-title);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   letter-spacing: 0.05em;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   text-transform: uppercase;
 }
 
 .admin-login-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--color-gray);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
-/* Conteúdo Principal Admin */
+/* Container */
 .admin-container {
-  max-width: 900px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 16px 14px;
 }
 
-/* Abas de Navegação Admin */
-.admin-tabs {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  margin-bottom: 24px;
-  border-bottom: 1px solid var(--color-border);
+/* 4 BOTÕES PRINCIPAIS NO TOPO (Pills/Tabs Estilo App) */
+.admin-quick-nav {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
-.admin-tab-btn {
-  background: transparent;
-  border: 1px solid transparent;
+.admin-nav-pill {
+  background: #141414;
+  border: 1px solid var(--color-border);
   color: var(--color-gray);
-  padding: 10px 18px;
-  border-radius: var(--radius-btn);
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
+  border-radius: 10px;
+  padding: 10px 4px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.admin-tab-btn:hover {
-  color: var(--color-ice);
-  background: rgba(255, 255, 255, 0.04);
+.admin-nav-pill svg {
+  stroke-width: 2.2;
 }
 
-.admin-tab-btn.active {
+.admin-nav-pill span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.admin-nav-pill:active {
+  transform: scale(0.96);
+}
+
+.admin-nav-pill.active {
   background: var(--color-orange);
-  color: #000;
   border-color: var(--color-orange);
+  color: #000;
+  box-shadow: 0 4px 14px rgba(243, 146, 0, 0.35);
 }
 
 /* Painéis de Conteúdo */
@@ -210,6 +214,12 @@
 
 .admin-panel.active {
   display: block;
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Cards de Seção */
@@ -217,56 +227,110 @@
   background: var(--color-graphite);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 18px 14px;
+  margin-bottom: 16px;
 }
 
 .admin-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-  gap: 12px;
+  margin-bottom: 14px;
+  gap: 10px;
 }
 
 .admin-card-title {
   font-family: var(--font-title);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 8px;
+  margin: 0;
 }
 
-/* Lista de Serviços Admin */
-.admin-service-list {
+.admin-card-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-gray);
+  margin-top: 4px;
+  line-height: 1.35;
+}
+
+/* 1. SEÇÃO PREÇOS: Edição Fácil em Lista */
+.admin-price-row {
+  background: #141414;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  padding: 12px 14px;
+  margin-bottom: 10px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
   gap: 12px;
 }
 
+.admin-price-info {
+  flex: 1;
+}
+
+.admin-price-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-ice);
+  margin-bottom: 2px;
+}
+
+.admin-price-category {
+  font-size: 0.72rem;
+  color: var(--color-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-price-input-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #0D0D0D;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  width: 110px;
+}
+
+.admin-price-currency {
+  font-weight: 700;
+  color: var(--color-orange);
+  font-size: 0.82rem;
+}
+
+.admin-price-field {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--color-ice);
+  font-weight: 700;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+/* 2. SEÇÃO SERVIÇOS: Cards com Botões Rápidos */
 .admin-service-row {
   background: #141414;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  padding: 16px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 16px;
-  align-items: center;
-  transition: border-color 0.2s;
-}
-
-.admin-service-row:hover {
-  border-color: rgba(243, 146, 0, 0.4);
-}
-
-.admin-service-details {
+  padding: 14px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
+}
+
+.admin-service-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .admin-service-name {
@@ -276,168 +340,231 @@
   color: var(--color-ice);
 }
 
-.admin-service-meta {
-  font-size: 0.82rem;
+.admin-service-badge-price {
+  background: rgba(243, 146, 0, 0.15);
+  border: 1px solid var(--color-orange);
+  color: var(--color-orange);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.admin-service-desc {
+  font-size: 0.8rem;
   color: var(--color-gray);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  line-height: 1.35;
+  margin: 0;
 }
 
-.admin-service-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.admin-service-actions {
-  display: flex;
-  align-items: center;
+.admin-service-btn-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.btn-icon-admin {
-  background: transparent;
+.btn-card-action {
+  background: #1E1E1E;
   border: 1px solid var(--color-border);
-  color: var(--color-gray);
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-btn);
+  color: var(--color-ice);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-icon-admin:hover {
-  border-color: var(--color-orange);
-  color: var(--color-orange);
-}
-
-.btn-icon-admin.danger:hover {
-  border-color: var(--color-error);
-  color: var(--color-error);
-  background: rgba(255, 71, 87, 0.1);
-}
-
-/* Grid de Dias da Semana */
-.days-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.day-toggle-card {
-  background: #141414;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-btn);
-  padding: 14px 10px;
-  text-align: center;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.2s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   gap: 6px;
 }
 
-.day-toggle-card.active {
+.btn-card-action.danger {
+  color: #ff6b81;
+  border-color: rgba(255, 71, 87, 0.3);
+  background: rgba(255, 71, 87, 0.08);
+}
+
+/* 3. SEÇÃO DIAS: Botões Grandes em Grid Mobile */
+.days-grid-mobile {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.day-btn-card {
+  background: #141414;
+  border: 1.5px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.day-btn-card:active {
+  transform: scale(0.96);
+}
+
+.day-btn-card.active {
   background: rgba(243, 146, 0, 0.12);
   border-color: var(--color-orange);
 }
 
-.day-name {
-  font-weight: 700;
-  font-size: 0.88rem;
+.day-btn-name {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-ice);
 }
 
-.day-status {
+.day-btn-pill {
   font-size: 0.72rem;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 12px;
   background: #242424;
   color: var(--color-gray);
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-.day-toggle-card.active .day-status {
+.day-btn-card.active .day-btn-pill {
   background: var(--color-orange);
   color: #000;
-  font-weight: 700;
 }
 
-/* Horários */
-.time-settings-grid {
+/* 4. SEÇÃO HORÁRIOS: Controles de Tempo + Slots */
+.time-inputs-box {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-@media (max-width: 600px) {
-  .time-settings-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Bloqueio de Horários Específicos */
-.slots-manager-grid {
+.slots-grid-mobile {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 
-.slot-toggle-badge {
+.slot-btn-mobile {
   background: #141414;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 8px 4px;
+  padding: 10px 4px;
   text-align: center;
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 700;
   cursor: pointer;
   user-select: none;
-  transition: all 0.2s;
+  transition: all 0.15s;
 }
 
-.slot-toggle-badge.available {
-  border-color: rgba(46, 213, 115, 0.4);
+.slot-btn-mobile:active {
+  transform: scale(0.95);
+}
+
+.slot-btn-mobile.available {
+  border-color: rgba(46, 213, 115, 0.5);
   color: var(--color-success);
+  background: rgba(46, 213, 115, 0.06);
 }
 
-.slot-toggle-badge.blocked {
-  background: rgba(255, 71, 87, 0.1);
-  border-color: rgba(255, 71, 87, 0.5);
+.slot-btn-mobile.blocked {
+  background: rgba(255, 71, 87, 0.12);
+  border-color: rgba(255, 71, 87, 0.6);
   color: var(--color-error);
   text-decoration: line-through;
 }
 
-/* Toast de Notificação */
+/* Botão Salvar Flutuante ou no Fim */
+.btn-save-mobile-full {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-btn);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Bottom Bar Fixa para Navegação Rápida no Mobile */
+.admin-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(13, 13, 13, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 8px 6px;
+  z-index: 99;
+}
+
+.bottom-bar-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-gray);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  cursor: pointer;
+}
+
+.bottom-bar-btn svg {
+  stroke-width: 2.2;
+}
+
+.bottom-bar-btn span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.bottom-bar-btn.active {
+  color: var(--color-orange);
+}
+
+/* Toast */
 .admin-toast {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
   background: var(--color-graphite);
   border: 1px solid var(--color-orange);
   color: var(--color-ice);
-  padding: 14px 20px;
-  border-radius: var(--radius-btn);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  padding: 12px 18px;
+  border-radius: 50px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: 500;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
   z-index: 1000;
-  transform: translateY(100px);
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
 }
 
 .admin-toast.show {
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
