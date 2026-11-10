@@ -169,7 +169,6 @@
           <p class="service-item-desc">${service.description}</p>
           <div class="service-item-meta">
             <span class="service-item-price">${formatMoney(service.price)}</span>
-            <span class="service-item-duration">&bull; ${service.durationMinutes} min</span>
           </div>
         </div>
         <div class="service-select-btn" aria-label="${isSelected ? 'Remover' : 'Selecionar'}">
@@ -245,12 +244,13 @@
       updateFloatingBar();
     }
 
-    const totalMinutes = state.selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
     const totalPrice = state.selectedServices.reduce((sum, s) => sum + s.price, 0);
     const names = state.selectedServices.map(s => s.name).join(' + ');
 
     dom.modalServiceName.textContent = names;
-    dom.modalServiceDuration.textContent = `${totalMinutes} min`;
+    if (dom.modalServiceDuration) {
+      dom.modalServiceDuration.textContent = '30 min';
+    }
     dom.modalServicePrice.textContent = formatMoney(totalPrice);
 
     const now = new Date();
@@ -344,12 +344,11 @@
 
     const serviceNames = state.selectedServices.map(s => s.name).join(' + ');
     const totalPrice = state.selectedServices.reduce((sum, s) => sum + s.price, 0);
-    const totalMinutes = state.selectedServices.reduce((sum, s) => sum + s.durationMinutes, 0);
 
     const text = 
       `Olá Biel! Gostaria de agendar um horário:\n\n` +
       `✂️ *Serviço:* ${serviceNames}\n` +
-      `💰 *Valor:* ${formatMoney(totalPrice)} (~${totalMinutes} min)\n` +
+      `💰 *Valor:* ${formatMoney(totalPrice)}\n` +
       `📅 *Data:* ${formatDateBR(state.bookingDate)}\n` +
       `⏰ *Horário:* ${state.bookingTime}\n\n` +
       `👤 *Cliente:* ${name}\n` +

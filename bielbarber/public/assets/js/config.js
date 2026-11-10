@@ -18,14 +18,14 @@ window.BIEL_CONFIG = Object.freeze({
   address: 'Rua Augusta, 1500 - Consolação, São Paulo - SP',
   workingHours: 'Segunda a Sábado das 09:00 às 19:00',
 
-  // Catálogo Oficial com preços e durações reais do Biel
+  // Catálogo Oficial com preços reais do Biel (agendamento a cada 30 min)
   services: [
     {
       id: 'corte',
       name: 'Corte',
       category: 'cortes',
       price: 35.00,
-      durationMinutes: 40,
+      durationMinutes: 30,
       description: 'Corte masculino tradicional ou fade na máquina e tesoura com acabamento preciso.',
       image: 'assets/img/service_corte.webp',
       featured: true
@@ -45,7 +45,7 @@ window.BIEL_CONFIG = Object.freeze({
       name: 'Sobrancelha',
       category: 'cortes',
       price: 10.00,
-      durationMinutes: 15,
+      durationMinutes: 30,
       description: 'Design e limpeza da sobrancelha na navalha com contorno limpo.',
       image: 'assets/img/service_sobrancelha.webp',
       featured: false
@@ -55,7 +55,7 @@ window.BIEL_CONFIG = Object.freeze({
       name: 'Penteado',
       category: 'cortes',
       price: 10.00,
-      durationMinutes: 15,
+      durationMinutes: 30,
       description: 'Lavagem, secagem e finalização com pomada ou spray fixador de alta fixação.',
       image: 'assets/img/service_corte.webp',
       featured: false
@@ -65,7 +65,7 @@ window.BIEL_CONFIG = Object.freeze({
       name: 'Platinado',
       category: 'quimica',
       price: 70.00,
-      durationMinutes: 90,
+      durationMinutes: 30,
       description: 'Descoloração global e matização platinada de alto padrão.',
       image: 'assets/img/service_degrade.webp',
       featured: true
@@ -75,7 +75,7 @@ window.BIEL_CONFIG = Object.freeze({
       name: 'Combo Completo',
       category: 'combos',
       price: 60.00,
-      durationMinutes: 70,
+      durationMinutes: 30,
       description: 'Experiência total: Corte masculino, Sobrancelha na navalha e Barba alinhada.',
       image: 'assets/img/service_combo.webp',
       featured: true

@@ -13,12 +13,12 @@ module.exports = {
   // Dias fechados (0 = Domingo)
   closedDays: [0],
 
-  // Serviços e preços oficiais
+  // Serviços e preços oficiais (marcações padronizadas a cada 30 min)
   services: [
     {
       id: 'corte',
       name: 'Corte',
-      durationMinutes: 40,
+      durationMinutes: 30,
       price: 35.0
     },
     {
@@ -30,25 +30,25 @@ module.exports = {
     {
       id: 'sobrancelha',
       name: 'Sobrancelha',
-      durationMinutes: 15,
+      durationMinutes: 30,
       price: 10.0
     },
     {
       id: 'penteado',
       name: 'Penteado',
-      durationMinutes: 15,
+      durationMinutes: 30,
       price: 10.0
     },
     {
       id: 'platinado',
       name: 'Platinado',
-      durationMinutes: 90,
+      durationMinutes: 30,
       price: 70.0
     },
     {
       id: 'combo-completo',
       name: 'Combo Completo (Corte, Sobrancelha e Barba)',
-      durationMinutes: 70,
+      durationMinutes: 30,
       price: 60.0
     }
   ]
