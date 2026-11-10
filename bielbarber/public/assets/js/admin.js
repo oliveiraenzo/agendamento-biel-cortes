@@ -502,12 +502,16 @@
         </div>
 
         <!-- Rodapé do Card: Ações Rápidas em Botões Elegantes -->
-        <div style="display: grid; grid-template-columns: ${!isConfirmed ? '1fr 1fr 1fr' : '1fr 1fr'}; gap: 8px; margin-top: 2px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 2px;">
           ${!isConfirmed ? `
             <button type="button" class="btn-confirm-pay" data-id="${app._id || app.id}" style="background: rgba(46, 213, 115, 0.15); border: 1px solid #2ed573; color: #2ed573; padding: 8px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
               Marcar Pago
             </button>
-          ` : ''}
+          ` : `
+            <button type="button" class="btn-unmark-pay" data-id="${app._id || app.id}" style="background: rgba(243, 146, 0, 0.12); border: 1px solid var(--color-orange); color: var(--color-orange); padding: 8px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+              Desmarcar Pago
+            </button>
+          `}
           <a href="https://wa.me/55${app.clientPhone.replace(/\D/g, '')}" target="_blank" style="background: rgba(37, 211, 102, 0.12); border: 1px solid rgba(37, 211, 102, 0.35); color: #25D366; text-decoration: none; padding: 8px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
             <span>WhatsApp</span>
@@ -535,7 +539,30 @@
           } catch (e) {
             alert('Erro: ' + e.message);
             btnConfirm.disabled = false;
-            btnConfirm.textContent = '✓ Marcar Pago';
+            btnConfirm.textContent = 'Marcar Pago';
+          }
+        });
+      }
+
+      // Evento de Desmarcar Pago (Voltar para status pendente)
+      const btnUnmark = card.querySelector('.btn-unmark-pay');
+      if (btnUnmark) {
+        btnUnmark.addEventListener('click', async () => {
+          btnUnmark.disabled = true;
+          btnUnmark.textContent = 'Atualizando...';
+          try {
+            const previousStatus = isPix ? 'PAGO_PELO_CLIENTE' : 'PAGAR_NA_HORA';
+            await fetch(`${API_URL}/appointments/${app._id || app.id}/payment`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentStatus: previousStatus })
+            });
+            showToast('Pagamento desmarcado!');
+            loadAgenda();
+          } catch (e) {
+            alert('Erro: ' + e.message);
+            btnUnmark.disabled = false;
+            btnUnmark.textContent = 'Desmarcar Pago';
           }
         });
       }
