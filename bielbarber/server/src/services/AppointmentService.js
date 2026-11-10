@@ -135,8 +135,8 @@ class AppointmentService {
         endMinutes,
         durationMinutes: parseInt(durationMinutes, 10),
         status: 'CONFIRMED',
-        paymentMethod: bookingData.paymentMethod || 'PIX',
-        paymentStatus: bookingData.paymentMethod === 'NO_LOCAL' ? 'PAGAR_NA_HORA' : 'PAGO_PELO_CLIENTE'
+        paymentMethod: data.paymentMethod || 'PIX',
+        paymentStatus: data.paymentMethod === 'NO_LOCAL' ? 'PAGAR_NA_HORA' : 'PAGO_PELO_CLIENTE'
       });
 
       await newAppointment.save();
