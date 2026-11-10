@@ -19,7 +19,7 @@
   } catch (e) {}
 
   const GALLERY = CONFIG.gallery || [];
-  const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '5511999999999';
+  const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '5511964835563';
 
   // Estado da Aplicação
   const state = {
