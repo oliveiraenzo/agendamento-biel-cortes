@@ -34,7 +34,23 @@ const settingsSchema = new mongoose.Schema(
     },
     blockedSlots: [
       { type: String } // ex: ["12:00", "12:30"]
-    ]
+    ],
+    adminEmail: {
+      type: String,
+      default: 'bielcortes@gmail.com'
+    },
+    adminPassword: {
+      type: String,
+      default: 'biel123'
+    },
+    resetToken: {
+      type: String,
+      default: null
+    },
+    resetTokenExpires: {
+      type: Date,
+      default: null
+    }
   },
   {
     timestamps: true

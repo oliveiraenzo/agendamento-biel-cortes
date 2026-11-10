@@ -262,11 +262,134 @@
     if (dom.adminBookingForm) {
       dom.adminBookingForm.addEventListener('submit', handleAdminCreateBooking);
     }
+
+    // Esqueci a Senha
+    setupForgotPasswordEvents();
   }
 
-  function handleLogin(e) {
+  function setupForgotPasswordEvents() {
+    const btnForgot = document.getElementById('btn-forgot-password');
+    const forgotCard = document.getElementById('forgot-password-card');
+    const btnCancel = document.getElementById('btn-cancel-forgot');
+    const btnSendCode = document.getElementById('btn-send-reset-code');
+    const emailInput = document.getElementById('admin-email-input');
+    const step1 = document.getElementById('forgot-step-1');
+    const step2 = document.getElementById('forgot-step-2');
+    const codeInput = document.getElementById('reset-code-input');
+    const newPassInput = document.getElementById('new-password-input');
+    const btnSubmitNew = document.getElementById('btn-submit-new-password');
+
+    if (btnForgot) {
+      btnForgot.addEventListener('click', () => {
+        forgotCard.style.display = 'block';
+        btnForgot.style.display = 'none';
+      });
+    }
+
+    if (btnCancel) {
+      btnCancel.addEventListener('click', () => {
+        forgotCard.style.display = 'none';
+        if (btnForgot) btnForgot.style.display = 'inline';
+      });
+    }
+
+    if (btnSendCode) {
+      btnSendCode.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        if (!email) return alert('Informe o e-mail do administrador.');
+
+        btnSendCode.disabled = true;
+        btnSendCode.textContent = 'Verificando...';
+
+        try {
+          const res = await fetch(`${API_URL}/admin/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Erro ao gerar código');
+
+          // Preenche automaticamente o código gerado para ser 100% transparente para o Biel
+          if (codeInput && data.code) {
+            codeInput.value = data.code;
+          }
+
+          alert(`Código de recuperação gerado com sucesso: ${data.code}\n\nPreenchido automaticamente abaixo. Agora basta digitar a nova senha!`);
+          step1.style.display = 'none';
+          step2.style.display = 'block';
+        } catch (e) {
+          alert('Aviso: ' + e.message);
+        } finally {
+          btnSendCode.disabled = false;
+          btnSendCode.textContent = 'Gerar Código de Recuperação';
+        }
+      });
+    }
+
+    if (btnSubmitNew) {
+      btnSubmitNew.addEventListener('click', async () => {
+        const code = codeInput.value.trim();
+        const newPassword = newPassInput.value.trim();
+
+        if (!code || !newPassword) return alert('Preencha o código e a nova senha.');
+
+        btnSubmitNew.disabled = true;
+        btnSubmitNew.textContent = 'Salvando no banco...';
+
+        try {
+          const res = await fetch(`${API_URL}/admin/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, newPassword })
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Erro ao redefinir senha');
+
+          alert('Sucesso! Sua nova senha foi gravada no MongoDB Atlas. Você já pode fazer login com ela.');
+          forgotCard.style.display = 'none';
+          if (btnForgot) btnForgot.style.display = 'inline';
+          step1.style.display = 'block';
+          step2.style.display = 'none';
+          dom.passInput.value = newPassword;
+        } catch (e) {
+          alert('Erro: ' + e.message);
+        } finally {
+          btnSubmitNew.disabled = false;
+          btnSubmitNew.textContent = 'Salvar Nova Senha no Banco';
+        }
+      });
+    }
+  }
+
+  async function handleLogin(e) {
     e.preventDefault();
-    if (dom.passInput.value.trim() === ADMIN_PASSCODE) {
+    const enteredPass = dom.passInput.value.trim();
+
+    try {
+      // 1. Tenta validar direto no MongoDB Atlas
+      const res = await fetch(`${API_URL}/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: enteredPass })
+      });
+
+      if (res.ok) {
+        sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        dom.loginError.style.display = 'none';
+        dom.passInput.value = '';
+        showAdminView();
+        showToast('Bem-vindo, Biel!');
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend offline, usando fallback local:', err.message);
+    }
+
+    // Fallback local se backend offline
+    if (enteredPass === ADMIN_PASSCODE) {
       sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
       dom.loginError.style.display = 'none';
       dom.passInput.value = '';

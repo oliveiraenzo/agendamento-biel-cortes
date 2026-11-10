@@ -11,9 +11,12 @@ router.post('/appointments', (req, res) => appointmentController.createAppointme
 router.patch('/appointments/:id/payment', (req, res) => appointmentController.updatePayment(req, res));
 router.delete('/appointments/:id', (req, res) => appointmentController.cancelAppointment(req, res));
 
-// Rotas de Configurações (Painel Admin do Gabriel)
+// Rotas de Configurações e Autenticação do Biel
 router.get('/settings', (req, res) => settingsController.getSettings(req, res));
 router.post('/settings', (req, res) => settingsController.updateSettings(req, res));
+router.post('/admin/login', (req, res) => settingsController.login(req, res));
+router.post('/admin/forgot-password', (req, res) => settingsController.forgotPassword(req, res));
+router.post('/admin/reset-password', (req, res) => settingsController.resetPassword(req, res));
 
 // Health Check
 router.get('/health', (req, res) => {

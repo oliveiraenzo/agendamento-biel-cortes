@@ -126,6 +126,96 @@ class SettingsController {
       return res.status(500).json({ error: 'Erro ao salvar configurações no banco.' });
     }
   }
+
+  /**
+   * POST /api/admin/login
+   * Valida a senha do Biel direto no banco
+   */
+  async login(req, res) {
+    try {
+      const { password } = req.body;
+      let settings = await Settings.findOne({ key: 'main_settings' });
+      const validPass = settings?.adminPassword || 'biel123';
+
+      if (password === validPass) {
+        return res.status(200).json({ success: true, message: 'Autenticado com sucesso!' });
+      }
+      return res.status(401).json({ success: false, error: 'Código de acesso incorreto.' });
+    } catch (e) {
+      return res.status(500).json({ error: 'Erro na autenticação.' });
+    }
+  }
+
+  /**
+   * POST /api/admin/forgot-password
+   * Solicita redefinição de senha com base no e-mail cadastrado
+   */
+  async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      const cleanEmail = email?.trim().toLowerCase();
+
+      let settings = await Settings.findOne({ key: 'main_settings' });
+      if (!settings) {
+        settings = await Settings.create({ key: 'main_settings' });
+      }
+
+      const registeredEmail = (settings.adminEmail || 'bielcortes@gmail.com').trim().toLowerCase();
+
+      // Confere se o e-mail bate com o do Biel
+      if (cleanEmail !== registeredEmail) {
+        return res.status(400).json({ error: 'E-mail não reconhecido como administrador da barbearia.' });
+      }
+
+      // Gera código de recuperação de 6 dígitos válido por 15 minutos
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      settings.resetToken = code;
+      settings.resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000);
+      await settings.save();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Código de recuperação gerado com sucesso!',
+        code: code // Retorna de forma transparente para permitir redefinição imediata
+      });
+    } catch (e) {
+      return res.status(500).json({ error: 'Erro ao processar recuperação de senha.' });
+    }
+  }
+
+  /**
+   * POST /api/admin/reset-password
+   * Define a nova senha permanente no MongoDB Atlas
+   */
+  async resetPassword(req, res) {
+    try {
+      const { code, newPassword } = req.body;
+      if (!newPassword || newPassword.length < 4) {
+        return res.status(400).json({ error: 'A nova senha deve ter pelo menos 4 caracteres.' });
+      }
+
+      let settings = await Settings.findOne({ key: 'main_settings' });
+      if (!settings || !settings.resetToken || settings.resetToken !== code?.trim()) {
+        return res.status(400).json({ error: 'Código de recuperação inválido ou expirado.' });
+      }
+
+      if (new Date() > new Date(settings.resetTokenExpires)) {
+        return res.status(400).json({ error: 'Código de recuperação expirou. Solicite um novo.' });
+      }
+
+      settings.adminPassword = newPassword;
+      settings.resetToken = null;
+      settings.resetTokenExpires = null;
+      await settings.save();
+
+      return res.status(200).json({
+        success: true,
+        message: 'Nova senha cadastrada com sucesso no banco de dados!'
+      });
+    } catch (e) {
+      return res.status(500).json({ error: 'Erro ao redefinir senha.' });
+    }
+  }
 }
 
 module.exports = new SettingsController();

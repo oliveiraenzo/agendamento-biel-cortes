@@ -56,7 +56,48 @@
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </button>
+
+          <div style="text-align: right; margin-top: 10px;">
+            <button type="button" id="btn-forgot-password" style="background: none; border: none; color: var(--color-orange); font-size: 0.78rem; cursor: pointer; text-decoration: underline;">
+              Esqueci minha senha
+            </button>
+          </div>
         </form>
+
+        <!-- Formulário Esqueci a Senha (Oculto por padrão) -->
+        <div id="forgot-password-card" style="display: none; margin-top: 14px; text-align: left; border-top: 1px solid var(--color-border); padding-top: 14px;">
+          <h4 style="font-size: 0.95rem; color: var(--color-ice); margin-bottom: 4px;">Recuperar Acesso</h4>
+          <p style="font-size: 0.78rem; color: var(--color-gray); margin-bottom: 10px;">
+            Informe o e-mail do Biel para gerar um código de redefinição transparente.
+          </p>
+
+          <div id="forgot-step-1">
+            <div class="form-group" style="margin-bottom: 10px;">
+              <input type="email" class="form-input" id="admin-email-input" placeholder="Seu e-mail cadastrado..." value="bielcortes@gmail.com">
+            </div>
+            <button type="button" class="btn-secondary" id="btn-send-reset-code" style="width: 100%; font-size: 0.82rem; padding: 10px;">
+              Gerar Código de Recuperação
+            </button>
+          </div>
+
+          <div id="forgot-step-2" style="display: none;">
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label class="form-label">Código de 6 Dígitos</label>
+              <input type="text" class="form-input" id="reset-code-input" placeholder="Ex: 849201">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label">Nova Senha</label>
+              <input type="password" class="form-input" id="new-password-input" placeholder="Digite sua nova senha...">
+            </div>
+            <button type="button" class="btn-primary" id="btn-submit-new-password" style="width: 100%; font-size: 0.85rem;">
+              Salvar Nova Senha no Banco
+            </button>
+          </div>
+          
+          <button type="button" id="btn-cancel-forgot" style="background: none; border: none; color: var(--color-gray); font-size: 0.75rem; margin-top: 10px; cursor: pointer;">
+            &larr; Voltar para o login
+          </button>
+        </div>
 
         <div style="margin-top: 24px;">
           <a href="index.html" class="btn-nav-site" style="font-size: 0.78rem;">
