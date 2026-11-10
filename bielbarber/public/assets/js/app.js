@@ -7,7 +7,17 @@
   'use strict';
 
   const CONFIG = window.BIEL_CONFIG || {};
-  const SERVICES = CONFIG.services || [];
+  const API_URL = CONFIG.apiUrl || 'http://localhost:3001/api';
+
+  // Carrega serviços sincronizados com o Painel Admin (LocalStorage) ou fallback do config.js
+  let SERVICES = [...(CONFIG.services || [])];
+  try {
+    const adminServices = localStorage.getItem('biel_admin_services');
+    if (adminServices) {
+      SERVICES = JSON.parse(adminServices);
+    }
+  } catch (e) {}
+
   const GALLERY = CONFIG.gallery || [];
   const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '5511999999999';
 
@@ -272,28 +282,76 @@
   }
 
   /**
-   * Gera Horários Disponíveis
+   * Gera Horários Disponíveis buscando da API com fallback local
    */
-  function renderTimeSlots(dateStr) {
+  async function renderTimeSlots(dateStr) {
     if (!dom.modalTimeSlots) return;
-    dom.modalTimeSlots.innerHTML = '';
+    dom.modalTimeSlots.innerHTML = '<span style="grid-column: span 4; font-size: 0.85rem; color: var(--color-gray); text-align: center; padding: 12px 0;">Consultando horários livres...</span>';
 
-    const slots = [];
-    const now = new Date();
-    const isToday = dateStr === now.toISOString().split('T')[0];
-    const currentMin = now.getHours() * 60 + now.getMinutes();
+    const duration = state.selectedServices.reduce((sum, s) => sum + (s.durationMinutes || 30), 0) || 30;
+    let slots = [];
 
-    for (let m = 9 * 60; m <= 18 * 60 + 30; m += 30) {
-      if (m >= 12 * 60 && m < 13 * 60) continue; // almoço
-      if (isToday && m <= currentMin + 20) continue;
+    try {
+      const response = await fetch(`${API_URL}/slots?date=${encodeURIComponent(dateStr)}&duration=${duration}`);
+      if (response.ok) {
+        const data = await response.json();
+        slots = data.slots || [];
+      } else {
+        throw new Error('Falha na resposta da API');
+      }
+    } catch (err) {
+      console.warn('API indisponível, gerando slots com fallback local:', err.message);
+      // Fallback local sincronizado com as configurações do Painel Admin (LocalStorage)
+      let workHours = { start: '09:00', end: '19:00' };
+      let workingDays = null;
+      let blockedSlots = [];
 
-      const hh = String(Math.floor(m / 60)).padStart(2, '0');
-      const mm = String(m % 60).padStart(2, '0');
-      slots.push(`${hh}:${mm}`);
+      try {
+        const savedHours = localStorage.getItem('biel_admin_working_hours');
+        if (savedHours) workHours = JSON.parse(savedHours);
+
+        const savedDays = localStorage.getItem('biel_admin_working_days');
+        if (savedDays) workingDays = JSON.parse(savedDays);
+
+        const savedBlocked = localStorage.getItem('biel_admin_blocked_slots');
+        if (savedBlocked) blockedSlots = JSON.parse(savedBlocked);
+      } catch (e) {}
+
+      // Verifica se o dia selecionado é folga
+      if (workingDays && Array.isArray(workingDays)) {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        const selectedDayOfWeek = new Date(year, month - 1, day).getDay();
+        const dayConfig = workingDays.find(d => d.day === selectedDayOfWeek);
+        if (dayConfig && !dayConfig.active) {
+          dom.modalTimeSlots.innerHTML = '<span style="grid-column: span 4; font-size: 0.85rem; color: #ff6b81; text-align: center; padding: 12px 0;">O Gabriel não atende neste dia da semana (Folga). Por favor, selecione outra data.</span>';
+          return;
+        }
+      }
+
+      const now = new Date();
+      const isToday = dateStr === now.toISOString().split('T')[0];
+      const currentMin = now.getHours() * 60 + now.getMinutes();
+
+      const [startH, startM] = (workHours.start || '09:00').split(':').map(Number);
+      const [endH, endM] = (workHours.end || '19:00').split(':').map(Number);
+      const startMin = startH * 60 + startM;
+      const endMin = endH * 60 + endM;
+
+      for (let m = startMin; m < endMin; m += 30) {
+        if (isToday && m <= currentMin + 15) continue;
+        const hh = String(Math.floor(m / 60)).padStart(2, '0');
+        const mm = String(m % 60).padStart(2, '0');
+        const timeFormatted = `${hh}:${mm}`;
+        if (!blockedSlots.includes(timeFormatted)) {
+          slots.push(timeFormatted);
+        }
+      }
     }
 
+    dom.modalTimeSlots.innerHTML = '';
+
     if (slots.length === 0) {
-      dom.modalTimeSlots.innerHTML = `<span style="grid-column: span 4; font-size: 0.85rem; color: var(--color-gray); text-align: center; padding: 12px 0;">Sem horários livres para hoje. Escolha outra data.</span>`;
+      dom.modalTimeSlots.innerHTML = `<span style="grid-column: span 4; font-size: 0.85rem; color: var(--color-gray); text-align: center; padding: 12px 0;">Sem horários livres para esta data. Escolha outro dia.</span>`;
       state.bookingTime = '';
       return;
     }
@@ -313,9 +371,9 @@
   }
 
   /**
-   * Confirmação via WhatsApp
+   * Confirmação salvando na API e abrindo WhatsApp
    */
-  function confirmAppointment() {
+  async function confirmAppointment() {
     const name = dom.clientNameInput.value.trim();
     const phone = dom.clientPhoneInput.value.trim();
 
@@ -343,7 +401,44 @@
     }
 
     const serviceNames = state.selectedServices.map(s => s.name).join(' + ');
+    const serviceIds = state.selectedServices.map(s => s.id).join('+') || 'corte';
     const totalPrice = state.selectedServices.reduce((sum, s) => sum + s.price, 0);
+    const totalDuration = state.selectedServices.reduce((sum, s) => sum + (s.durationMinutes || 30), 0) || 30;
+
+    // Desabilita botão enquanto processa
+    if (dom.btnConfirmAppointment) {
+      dom.btnConfirmAppointment.disabled = true;
+      dom.btnConfirmAppointment.textContent = 'Salvando agendamento...';
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientName: name,
+          clientPhone: phone,
+          serviceId: serviceIds,
+          serviceName: serviceNames,
+          price: totalPrice,
+          date: state.bookingDate,
+          time: state.bookingTime,
+          durationMinutes: totalDuration
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Não foi possível confirmar o horário.');
+      }
+    } catch (err) {
+      console.warn('Aviso: Falha ao persistir no backend, seguindo via WhatsApp:', err.message);
+    } finally {
+      if (dom.btnConfirmAppointment) {
+        dom.btnConfirmAppointment.disabled = false;
+        dom.btnConfirmAppointment.innerHTML = 'Confirmar Agendamento <i class="ph-bold ph-arrow-right"></i>';
+      }
+    }
 
     const text = 
       `Olá Biel! Gostaria de agendar um horário:\n\n` +
@@ -357,7 +452,7 @@
 
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
-    showToast('Abrindo WhatsApp oficial...', 'success');
+    showToast('Agendamento registrado! Abrindo WhatsApp...', 'success');
     setTimeout(() => {
       window.open(waUrl, '_blank');
       closeModal();

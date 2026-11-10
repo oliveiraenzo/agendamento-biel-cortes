@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>Painel Admin — Biel Cortes</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="assets/img/logo_refined.webp">
+
+  <!-- Fontes Oficiais: Oswald (Display) & Inter (UI) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS Base do Sistema + CSS Exclusivo Admin -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <!-- =======================================================================
+       1. TELA DE AUTENTICAÇÃO / LOGIN
+       ======================================================================= -->
+  <div class="admin-view active" id="login-view">
+    <div class="admin-login-screen">
+      <div class="admin-login-card">
+        <div class="admin-login-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h2 class="admin-login-title">Acesso Restrito</h2>
+        <p class="admin-login-subtitle">Área de gerenciamento exclusiva do Gabriel</p>
+
+        <form id="admin-login-form">
+          <div class="form-group" style="text-align: left; margin-bottom: 16px;">
+            <label class="form-label" for="admin-password-input">Código de Acesso</label>
+            <input type="password" class="form-input" id="admin-password-input" placeholder="Digite sua senha..." required autofocus autocomplete="current-password">
+            <p id="admin-login-error" style="color: var(--color-error); font-size: 0.8rem; margin-top: 6px; display: none;">
+              Código incorreto. Tente novamente.
+            </p>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%;">
+            <span>Entrar no Painel</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+
+        <div style="margin-top: 24px;">
+          <a href="index.html" class="btn-nav-site" style="font-size: 0.78rem;">
+            &larr; Voltar para a Barbearia
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       2. TELA DO PAINEL PRINCIPAL (AUTENTICADO)
+       ======================================================================= -->
+  <div class="admin-view" id="admin-view">
+    <!-- Barra Superior -->
+    <header class="admin-navbar">
+      <div class="admin-brand">
+        <img src="assets/img/logo_refined.webp" alt="Logo Biel Cortes">
+        <div class="admin-brand-info">
+          <h1>Biel Cortes</h1>
+          <span>Painel de Controle</span>
+        </div>
+      </div>
+
+      <div class="admin-nav-actions">
+        <a href="index.html" target="_blank" class="btn-nav-site" title="Abrir o site do cliente em nova aba">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span style="display: none; @media(min-width: 600px){display:inline;}">Ver Site</span>
+        </a>
+        <button class="btn-logout" id="btn-logout" type="button" title="Sair do painel">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Sair</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Conteúdo do Painel -->
+    <main class="admin-container">
+      <!-- Abas de Navegação -->
+      <nav class="admin-tabs" aria-label="Seções do Admin">
+        <button class="admin-tab-btn active" data-tab="servicos" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>
+          <span>Preços e Serviços</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="horarios" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Dias e Horários</span>
+        </button>
+      </nav>
+
+      <!-- ===================================================================
+           ABA 1: SERVIÇOS E PREÇOS
+           =================================================================== -->
+      <div class="admin-panel active" id="panel-servicos">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h2 class="admin-card-title">Catálogo de Serviços</h2>
+              <p style="font-size: 0.85rem; color: var(--color-gray); margin-top: 4px;">
+                Adicione novos cortes ou atualize os valores cobrados diretamente aos clientes.
+              </p>
+            </div>
+            <button class="btn-primary" id="btn-add-service" type="button" style="padding: 10px 18px; font-size: 0.88rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Novo Serviço</span>
+            </button>
+          </div>
+
+          <!-- Lista Dinâmica de Serviços -->
+          <div class="admin-service-list" id="admin-services-list">
+            <!-- Gerado via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================
+           ABA 2: DIAS E HORÁRIOS DE TRABALHO
+           =================================================================== -->
+      <div class="admin-panel" id="panel-horarios">
+        <!-- Dias de Atendimento -->
+        <div class="admin-card">
+          <h2 class="admin-card-title">1. Dias de Atendimento</h2>
+          <p style="font-size: 0.85rem; color: var(--color-gray); margin: 6px 0 16px;">
+            Clique nos dias para ativar ou marcar como folga. Dias desmarcados ficam indisponíveis para o cliente.
+          </p>
+
+          <div class="days-grid" id="days-selector-grid">
+            <!-- Gerado via JavaScript -->
+          </div>
+        </div>
+
+        <!-- Horários de Funcionamento -->
+        <div class="admin-card">
+          <h2 class="admin-card-title">2. Horário do Expediente</h2>
+          <p style="font-size: 0.85rem; color: var(--color-gray); margin: 6px 0 16px;">
+            Defina o horário em que a barbearia abre e encerra o dia (intervalos automáticos de 30 minutos).
+          </p>
+
+          <div class="time-settings-grid">
+            <div class="form-group">
+              <label class="form-label" for="time-start">Horário de Início</label>
+              <input type="time" class="form-input" id="time-start" value="09:00">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="time-end">Horário de Término</label>
+              <input type="time" class="form-input" id="time-end" value="19:00">
+            </div>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <h3 style="font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 0.04em; text-transform: uppercase;">
+              Bloqueio Rápido de Horários (Pausa / Almoço)
+            </h3>
+            <p style="font-size: 0.82rem; color: var(--color-gray); margin-top: 4px;">
+              Clique em um horário para bloqueá-lo (em vermelho) ou liberá-lo (em verde).
+            </p>
+
+            <div class="slots-manager-grid" id="slots-manager-grid">
+              <!-- Gerado via JavaScript -->
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; text-align: right;">
+            <button class="btn-primary" id="btn-save-schedule" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span>Salvar Horários e Dias</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- =======================================================================
+       3. MODAL DE CRIAÇÃO / EDIÇÃO DE SERVIÇO
+       ======================================================================= -->
+  <div class="modal-backdrop" id="service-edit-modal" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="service-modal-title">Editar Serviço</h2>
+        <button class="modal-close-btn" id="btn-cancel-service" type="button" aria-label="Fechar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <form id="service-edit-form">
+        <input type="hidden" id="service-id">
+
+        <div class="form-group">
+          <label class="form-label" for="service-name">Nome do Serviço</label>
+          <input type="text" class="form-input" id="service-name" placeholder="Ex: Degradê Especial" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="service-price">Preço (R$)</label>
+          <input type="number" step="0.50" min="0" class="form-input" id="service-price" placeholder="Ex: 35.00" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="service-category">Categoria</label>
+          <select class="form-input" id="service-category" style="cursor: pointer;">
+            <option value="cortes">Cortes Masculinos</option>
+            <option value="barba">Barba & Visagismo</option>
+            <option value="quimica">Química & Platinado</option>
+            <option value="combos">Combos Completos</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="service-desc">Descrição Breve</label>
+          <textarea class="form-input" id="service-desc" rows="3" placeholder="Detalhes do que está incluso no corte..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 12px;">
+          <span>Salvar Alterações</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação -->
+  <div class="admin-toast" id="admin-toast" role="alert">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    <span id="toast-message">Configurações salvas!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
