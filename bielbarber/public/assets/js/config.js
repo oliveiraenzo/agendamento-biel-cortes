@@ -13,7 +13,7 @@ window.BIEL_CONFIG = Object.freeze({
     : '/api',
 
   // WhatsApp oficial do Biel (formato internacional sem caracteres especiais)
-  whatsappNumber: '551196483-5563',
+  whatsappNumber: '5511964835563',
 
   // Instagram oficial
   instagramHandle: 'bielcortes_oficial',

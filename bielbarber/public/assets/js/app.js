@@ -460,7 +460,8 @@
       manageLink +
       `\n\nPode confirmar na agenda?`;
 
-    const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+    const cleanWaNumber = String(WHATSAPP_NUMBER).replace(/\D/g, '');
+    const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent(text)}`;
 
     showToast('Agendamento registrado! Abrindo WhatsApp...', 'success');
     setTimeout(() => {
