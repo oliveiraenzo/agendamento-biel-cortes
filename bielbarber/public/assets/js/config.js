@@ -8,9 +8,9 @@ window.BIEL_CONFIG = Object.freeze({
   slogan: 'Estilo, atitude e confiança.',
 
   // URL da API Backend (em desenvolvimento local ou URL da nuvem)
-  apiUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  apiUrl: window.location.hostname === 'localhost' && window.location.port !== '3001'
     ? 'http://localhost:3001/api'
-    : '/api',
+    : (window.location.protocol === 'file:' ? 'https://agendamento-biel-cortes.onrender.com/api' : '/api'),
 
   // Dados do Pix Oficial (Banco Central EMV)
   pix: {
