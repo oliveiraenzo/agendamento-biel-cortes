@@ -1,19 +1,37 @@
 const mongoose = require('mongoose');
 const Appointment = require('../models/Appointment');
+const Settings = require('../models/Settings');
 const businessConfig = require('../config/business');
 const { timeToMinutes, minutesToTime, hasOverlap } = require('../utils/timeUtils');
 
 class AppointmentService {
   /**
    * Calcula on-the-fly os slots de tempo disponíveis para uma determinada data e duração
+   * Respeitando dias de atendimento, expediente e horários bloqueados pelo Biel no painel admin
    */
   async getAvailableSlots(dateStr, durationMinutes = 30) {
     const duration = parseInt(durationMinutes, 10);
     const [year, month, day] = dateStr.split('-').map(Number);
     const dayOfWeek = new Date(year, month - 1, day).getDay();
 
-    // 1. Checa dias de folga (Domingos)
-    if (businessConfig.closedDays.includes(dayOfWeek)) {
+    // 1. Busca configurações dinâmicas salvas pelo Biel no MongoDB Atlas
+    let dbSettings = null;
+    if (mongoose.connection.readyState === 1) {
+      dbSettings = await Settings.findOne({ key: 'main_settings' }).lean();
+    }
+
+    // Checa dias de folga (pelo banco se existir, ou fallback padrão)
+    if (dbSettings && dbSettings.workingDays && dbSettings.workingDays.length > 0) {
+      const dayConfig = dbSettings.workingDays.find(d => d.day === dayOfWeek);
+      if (dayConfig && !dayConfig.active) {
+        return {
+          date: dateStr,
+          durationMinutes: duration,
+          slots: [],
+          message: 'Barbearia fechada neste dia da semana.'
+        };
+      }
+    } else if (businessConfig.closedDays.includes(dayOfWeek)) {
       return {
         date: dateStr,
         durationMinutes: duration,
@@ -45,10 +63,27 @@ class AppointmentService {
       }))
     ];
 
+    // Adiciona horários que o Biel bloqueou no painel admin (ex: "14:00", "15:30")
+    const blockedSlots = dbSettings?.blockedSlots || [];
+    blockedSlots.forEach(blockedTime => {
+      const bStart = timeToMinutes(blockedTime);
+      busyIntervals.push({
+        start: bStart,
+        end: bStart + 30
+      });
+    });
+
     // 3. Fatiamento de Horários On-The-Fly
     const slots = [];
-    const openMinutes = businessConfig.startHour * 60;
-    const closeMinutes = businessConfig.endHour * 60;
+    let openMinutes = businessConfig.startHour * 60;
+    let closeMinutes = businessConfig.endHour * 60;
+
+    if (dbSettings?.workingHours?.start) {
+      openMinutes = timeToMinutes(dbSettings.workingHours.start);
+    }
+    if (dbSettings?.workingHours?.end) {
+      closeMinutes = timeToMinutes(dbSettings.workingHours.end);
+    }
 
     const todayStr = new Date().toISOString().split('T')[0];
     const isToday = dateStr === todayStr;

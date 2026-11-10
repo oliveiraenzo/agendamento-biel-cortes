@@ -847,9 +847,19 @@
     });
   }
 
-  function handleSaveDays() {
+  async function handleSaveDays() {
     localStorage.setItem(STORAGE_KEYS.WORKING_DAYS, JSON.stringify(state.workingDays));
-    showToast('Dias de trabalho salvos!');
+
+    try {
+      await fetch(`${API_URL}/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workingDays: state.workingDays })
+      });
+      showToast('Dias salvos no banco e aplicados aos clientes!');
+    } catch (e) {
+      showToast('Dias de trabalho salvos localmente!');
+    }
   }
 
   // =========================================================================
@@ -895,7 +905,7 @@
     }
   }
 
-  function handleSaveHours() {
+  async function handleSaveHours() {
     state.workingHours = {
       start: dom.inputTimeStart.value || '09:00',
       end: dom.inputTimeEnd.value || '19:00',
@@ -904,7 +914,20 @@
 
     localStorage.setItem(STORAGE_KEYS.WORKING_HOURS, JSON.stringify(state.workingHours));
     localStorage.setItem(STORAGE_KEYS.BLOCKED_SLOTS, JSON.stringify(state.blockedSlots));
-    showToast('Horários e intervalos salvos!');
+
+    try {
+      await fetch(`${API_URL}/settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          workingHours: state.workingHours,
+          blockedSlots: state.blockedSlots
+        })
+      });
+      showToast('Horários e bloqueios salvos no banco!');
+    } catch (e) {
+      showToast('Horários salvos localmente!');
+    }
   }
 
   // Toast
