@@ -448,11 +448,11 @@
 
       let badgeHtml = '';
       if (isConfirmed) {
-        badgeHtml = `<span style="background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.4); font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">✓ PAGO CONFIRMADO</span>`;
+        badgeHtml = `<span style="background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.4); font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">PAGO CONFIRMADO</span>`;
       } else if (isPix) {
-        badgeHtml = `<span style="background: rgba(243, 146, 0, 0.15); color: var(--color-orange); border: 1px solid rgba(243, 146, 0, 0.4); font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">⚡ PIX • CONFERIR EXTRATO</span>`;
+        badgeHtml = `<span style="background: rgba(243, 146, 0, 0.15); color: var(--color-orange); border: 1px solid rgba(243, 146, 0, 0.4); font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">PIX • CONFERIR EXTRATO</span>`;
       } else {
-        badgeHtml = `<span style="background: rgba(255, 255, 255, 0.08); color: var(--color-gray); border: 1px solid #444; font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">💵 PAGAR NO LOCAL</span>`;
+        badgeHtml = `<span style="background: rgba(255, 255, 255, 0.08); color: var(--color-gray); border: 1px solid #444; font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">PAGAR NO LOCAL</span>`;
       }
 
       const card = document.createElement('div');
@@ -482,7 +482,7 @@
                 ${escapeHTML(app.clientName)}
               </div>
               <div style="font-size: 0.8rem; color: var(--color-gray); margin-top: 2px;">
-                📱 ${escapeHTML(app.clientPhone)}
+                ${escapeHTML(app.clientPhone)}
               </div>
             </div>
           </div>
@@ -494,7 +494,6 @@
         <!-- Meio: Detalhes do Serviço e Preço -->
         <div style="background: #1c1c1c; border-radius: 8px; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;">
           <div style="color: var(--color-ice); display: flex; align-items: center; gap: 6px;">
-            <span style="color: var(--color-orange);">✂️</span>
             <span>${escapeHTML(app.serviceName)}</span>
           </div>
           <div style="font-family: var(--font-title); font-size: 1.15rem; color: var(--color-orange); font-weight: 700;">
@@ -506,7 +505,7 @@
         <div style="display: grid; grid-template-columns: ${!isConfirmed ? '1fr 1fr 1fr' : '1fr 1fr'}; gap: 8px; margin-top: 2px;">
           ${!isConfirmed ? `
             <button type="button" class="btn-confirm-pay" data-id="${app._id || app.id}" style="background: rgba(46, 213, 115, 0.15); border: 1px solid #2ed573; color: #2ed573; padding: 8px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-              ✓ Marcar Pago
+              Marcar Pago
             </button>
           ` : ''}
           <a href="https://wa.me/55${app.clientPhone.replace(/\D/g, '')}" target="_blank" style="background: rgba(37, 211, 102, 0.12); border: 1px solid rgba(37, 211, 102, 0.35); color: #25D366; text-decoration: none; padding: 8px 6px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center;">
