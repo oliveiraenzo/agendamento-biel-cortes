@@ -7,7 +7,7 @@
   'use strict';
 
   const CONFIG = window.BIEL_CONFIG || {};
-  const API_URL = CONFIG.apiUrl || 'http://localhost:3001/api';
+  const API_URL = CONFIG.apiUrl || 'https://agendamento-biel-cortes.onrender.com/api';
 
   // Carrega serviços sincronizados com o Painel Admin (LocalStorage) ou fallback do config.js
   let SERVICES = [...(CONFIG.services || [])];

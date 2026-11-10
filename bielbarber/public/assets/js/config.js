@@ -7,10 +7,10 @@ window.BIEL_CONFIG = Object.freeze({
   brandName: 'Biel Cortes',
   slogan: 'Estilo, atitude e confiança.',
 
-  // URL da API Backend (em desenvolvimento local ou URL da nuvem)
-  apiUrl: window.location.hostname === 'localhost' && window.location.port !== '3001'
-    ? 'http://localhost:3001/api'
-    : (window.location.protocol === 'file:' ? 'https://agendamento-biel-cortes.onrender.com/api' : '/api'),
+  // URL da API Backend
+  apiUrl: window.location.hostname === 'localhost' && window.location.port === '3001'
+    ? '/api'
+    : 'https://agendamento-biel-cortes.onrender.com/api',
 
   // Dados do Pix Oficial (Banco Central EMV)
   pix: {
