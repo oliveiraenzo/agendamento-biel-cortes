@@ -64,21 +64,37 @@ class AppointmentController {
   }
 
   /**
+   * GET /api/appointments/:id
+   * Consulta os dados de um agendamento específico (para tela de cancelamento)
+   */
+  async getAppointmentById(req, res) {
+    try {
+      const { id } = req.params;
+      const appointment = await appointmentService.getAppointmentById(id);
+      return res.status(200).json(appointment);
+    } catch (error) {
+      if (error.status) {
+        return res.status(error.status).json({ error: error.message });
+      }
+      return res.status(500).json({ error: 'Erro ao buscar agendamento.' });
+    }
+  }
+
+  /**
    * DELETE /api/appointments/:id
    * Cancela/remove um agendamento liberando a vaga para outro cliente
    */
   async cancelAppointment(req, res) {
     try {
       const { id } = req.params;
+      const isClient = req.query.isClient === 'true'; // flag se a solicitação veio da página do cliente
+
       if (!id) {
         return res.status(400).json({ error: 'ID do agendamento é obrigatório.' });
       }
 
-      const canceled = await appointmentService.cancelAppointment(id);
-      return res.status(200).json({
-        message: 'Agendamento cancelado com sucesso. O horário foi liberado!',
-        appointment: canceled
-      });
+      const result = await appointmentService.cancelAppointment(id, isClient);
+      return res.status(200).json(result);
     } catch (error) {
       if (error.status) {
         return res.status(error.status).json({ error: error.message });

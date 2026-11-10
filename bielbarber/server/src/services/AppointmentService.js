@@ -183,19 +183,75 @@ class AppointmentService {
   }
 
   /**
-   * Cancela/remove um agendamento liberando o horário no banco
+   * Busca um agendamento por ID para conferência dos dados na tela de cancelamento
    */
-  async cancelAppointment(appointmentId) {
+  async getAppointmentById(appointmentId) {
     if (mongoose.connection.readyState === 1) {
-      const appointment = await Appointment.findByIdAndUpdate(
-        appointmentId,
-        { status: 'CANCELED' },
-        { new: true }
-      );
+      const appointment = await Appointment.findById(appointmentId).lean();
       if (!appointment) {
         throw { status: 404, message: 'Agendamento não encontrado.' };
       }
-      return appointment;
+
+      // Calcula quantas horas faltam para o horário
+      const [year, month, day] = appointment.date.split('-').map(Number);
+      const [hour, minute] = appointment.startTime.split(':').map(Number);
+      const appointmentDateTime = new Date(year, month - 1, day, hour, minute);
+      const now = new Date();
+
+      const diffMs = appointmentDateTime - now;
+      const diffHours = diffMs / (1000 * 60 * 60);
+
+      // Regra de Negócio: menor que 3 horas é considerado cancelamento tardio (com taxa/cobrança)
+      const isLateCancellation = diffHours < 3;
+
+      return {
+        ...appointment,
+        hoursUntilAppointment: Math.round(diffHours * 10) / 10,
+        isLateCancellation
+      };
+    }
+    throw { status: 503, message: 'Banco de dados indisponível.' };
+  }
+
+  /**
+   * Cancela/remove um agendamento liberando o horário no banco
+   * Com validação da política de antecedência de 3 horas
+   */
+  async cancelAppointment(appointmentId, isClientRequest = false) {
+    if (mongoose.connection.readyState === 1) {
+      const existing = await Appointment.findById(appointmentId);
+      if (!existing) {
+        throw { status: 404, message: 'Agendamento não encontrado.' };
+      }
+
+      if (existing.status === 'CANCELED') {
+        throw { status: 400, message: 'Este agendamento já se encontra cancelado.' };
+      }
+
+      // Se for pedido pelo próprio cliente, verifica a regra de 3 horas
+      let feeRequired = false;
+      if (isClientRequest) {
+        const [year, month, day] = existing.date.split('-').map(Number);
+        const [hour, minute] = existing.startTime.split(':').map(Number);
+        const appointmentDateTime = new Date(year, month - 1, day, hour, minute);
+        const now = new Date();
+        const diffHours = (appointmentDateTime - now) / (1000 * 60 * 60);
+
+        if (diffHours < 3) {
+          feeRequired = true;
+        }
+      }
+
+      existing.status = 'CANCELED';
+      await existing.save();
+
+      return {
+        appointment: existing,
+        feeRequired,
+        message: feeRequired
+          ? 'Agendamento cancelado com menos de 3h de antecedência. Cobrança de taxa aplicável.'
+          : 'Agendamento cancelado gratuitamente com antecedência.'
+      };
     }
     return { message: 'Operando sem banco, cancelamento simulado.' };
   }

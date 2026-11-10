@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>Gerenciar Agendamento — Biel Cortes</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="assets/img/logo_refined.webp">
+
+  <!-- Fontes Oficiais -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .cancel-page {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      background: #0D0D0D;
+    }
+    .cancel-card {
+      background: var(--color-graphite);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      width: 100%;
+      max-width: 480px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    }
+    .cancel-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      background: rgba(243, 146, 0, 0.12);
+      color: var(--color-orange);
+    }
+    .cancel-icon.warning {
+      background: rgba(255, 71, 87, 0.15);
+      color: var(--color-error);
+    }
+    .info-list {
+      background: #141414;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 20px 0;
+      text-align: left;
+      font-size: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #222;
+      padding-bottom: 8px;
+    }
+    .info-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .info-label {
+      color: var(--color-gray);
+    }
+    .info-val {
+      font-weight: 600;
+      color: var(--color-ice);
+    }
+    .policy-box {
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .policy-box.free {
+      background: rgba(46, 213, 115, 0.1);
+      border: 1px solid rgba(46, 213, 115, 0.3);
+      color: #7bed9f;
+    }
+    .policy-box.late {
+      background: rgba(255, 71, 87, 0.12);
+      border: 1px solid rgba(255, 71, 87, 0.4);
+      color: #ff6b81;
+    }
+  </style>
+</head>
+<body class="cancel-page">
+
+  <div class="cancel-card" id="cancel-container">
+    <div class="cancel-icon" id="status-icon">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+
+    <h1 style="font-family: var(--font-title); font-size: 1.5rem; text-transform: uppercase;" id="main-title">
+      Carregando Agendamento...
+    </h1>
+    <p style="color: var(--color-gray); font-size: 0.88rem; margin-top: 6px;" id="main-subtitle">
+      Aguarde enquanto verificamos os dados no sistema.
+    </p>
+
+    <!-- Detalhes do agendamento (injetado via JS) -->
+    <div id="booking-details" style="display: none;">
+      <div class="info-list">
+        <div class="info-item">
+          <span class="info-label">Cliente:</span>
+          <span class="info-val" id="val-client"></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Serviço:</span>
+          <span class="info-val" id="val-service"></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Data:</span>
+          <span class="info-val" id="val-date"></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Horário:</span>
+          <span class="info-val" id="val-time"></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Valor:</span>
+          <span class="info-val" id="val-price"></span>
+        </div>
+      </div>
+
+      <!-- Caixa de Política de Cancelamento -->
+      <div id="policy-alert" class="policy-box free">
+        <!-- Texto dinâmico -->
+      </div>
+
+      <button type="button" class="btn-primary" id="btn-do-cancel" style="width: 100%; background: #c0392b; border-color: #e74c3c;">
+        Confirmar Desmarcação
+      </button>
+
+      <a href="index.html" class="btn-secondary" style="display: block; margin-top: 10px; width: 100%; text-decoration: none; padding: 12px;">
+        Manter Meu Horário (Voltar)
+      </a>
+    </div>
+
+    <!-- Tela de Sucesso / Mensagem Final -->
+    <div id="cancel-success-view" style="display: none; margin-top: 20px;">
+      <p id="success-message" style="color: var(--color-ice); font-size: 0.95rem; margin-bottom: 20px;"></p>
+      <a href="index.html" class="btn-primary" style="display: inline-block; width: 100%; text-decoration: none;">
+        Voltar à Página Inicial
+      </a>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script>
+    (async function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const appointmentId = urlParams.get('id');
+      const API_URL = window.BIEL_CONFIG?.apiUrl || 'http://localhost:3001/api';
+
+      const mainTitle = document.getElementById('main-title');
+      const mainSubtitle = document.getElementById('main-subtitle');
+      const detailsBox = document.getElementById('booking-details');
+      const policyAlert = document.getElementById('policy-alert');
+      const btnDoCancel = document.getElementById('btn-do-cancel');
+      const statusIcon = document.getElementById('status-icon');
+      const successView = document.getElementById('cancel-success-view');
+      const successMsg = document.getElementById('success-message');
+
+      if (!appointmentId) {
+        mainTitle.textContent = 'Link Inválido';
+        mainSubtitle.textContent = 'Nenhum código de agendamento foi encontrado na URL.';
+        return;
+      }
+
+      let currentBooking = null;
+
+      try {
+        const res = await fetch(`${API_URL}/appointments/${appointmentId}`);
+        if (!res.ok) throw new Error('Agendamento não encontrado ou já cancelado.');
+        currentBooking = await res.json();
+
+        if (currentBooking.status === 'CANCELED') {
+          mainTitle.textContent = 'Horário Já Desmarcado';
+          mainSubtitle.textContent = 'Este agendamento já foi cancelado anteriormente.';
+          successView.style.display = 'block';
+          successMsg.textContent = 'A vaga já se encontra liberada no sistema.';
+          return;
+        }
+
+        // Preenche campos
+        mainTitle.textContent = 'Desmarcar Horário';
+        mainSubtitle.textContent = 'Confira os dados do seu corte abaixo:';
+        document.getElementById('val-client').textContent = currentBooking.clientName;
+        document.getElementById('val-service').textContent = currentBooking.serviceName;
+        document.getElementById('val-date').textContent = currentBooking.date.split('-').reverse().join('/');
+        document.getElementById('val-time').textContent = currentBooking.startTime;
+        document.getElementById('val-price').textContent = `R$ ${Number(currentBooking.price).toFixed(2)}`;
+
+        // Aplica Regra das 3 Horas
+        if (currentBooking.isLateCancellation) {
+          policyAlert.className = 'policy-box late';
+          statusIcon.className = 'cancel-icon warning';
+          policyAlert.innerHTML = `
+            <strong>⚠️ Atenção: Política de Cancelamento Tardio</strong><br>
+            Falta menos de <strong>3 horas</strong> para o seu horário marcado. De acordo com a política da barbearia, cancelamentos de última hora exigem o pagamento do valor do serviço (<strong>R$ ${Number(currentBooking.price).toFixed(2)}</strong>) para cobrir o horário reservado.
+          `;
+          btnDoCancel.textContent = 'Desmarcar e Acertar com o Biel';
+        } else {
+          policyAlert.className = 'policy-box free';
+          policyAlert.innerHTML = `
+            <strong>✓ Cancelamento Gratuito</strong><br>
+            Você está cancelando com mais de 3 horas de antecedência. Não há nenhuma taxa e seu horário será liberado imediatamente.
+          `;
+          btnDoCancel.textContent = 'Confirmar Cancelamento Gratuito';
+        }
+
+        detailsBox.style.display = 'block';
+
+      } catch (err) {
+        mainTitle.textContent = 'Agendamento Não Localizado';
+        mainSubtitle.textContent = err.message;
+      }
+
+      // Ação de Cancelamento
+      btnDoCancel.addEventListener('click', async () => {
+        if (!confirm('Tem certeza de que deseja desmarcar seu horário?')) return;
+
+        btnDoCancel.disabled = true;
+        btnDoCancel.textContent = 'Cancelando...';
+
+        try {
+          const res = await fetch(`${API_URL}/appointments/${appointmentId}?isClient=true`, {
+            method: 'DELETE'
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Erro ao cancelar');
+
+          detailsBox.style.display = 'none';
+          mainTitle.textContent = 'Horário Desmarcado!';
+          statusIcon.innerHTML = `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+          if (data.feeRequired) {
+            mainSubtitle.textContent = 'Seu agendamento foi cancelado com menos de 3h de antecedência.';
+            successMsg.innerHTML = `
+              O horário foi liberado no sistema.<br><br>
+              Como a desmarcação ocorreu em cima da hora, por gentileza entre em contato no WhatsApp do Biel para realizar o acerto da taxa de reserva.
+            `;
+            const textWa = `Olá Biel! Cancelei meu agendamento das ${currentBooking.startTime} de hoje em cima da hora e estou chamando para acertar o valor conforme a política da barbearia.`;
+            const waNumber = window.BIEL_CONFIG?.whatsappNumber || '5511999999999';
+            const btnWa = document.createElement('a');
+            btnWa.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(textWa)}`;
+            btnWa.target = '_blank';
+            btnWa.className = 'btn-primary';
+            btnWa.style.cssText = 'display: inline-block; width: 100%; margin-bottom: 12px; background: #25D366; border-color: #25D366;';
+            btnWa.textContent = 'Falar no WhatsApp com o Biel';
+            successView.prepend(btnWa);
+          } else {
+            mainSubtitle.textContent = 'Seu horário foi cancelado com sucesso e sem cobranças.';
+            successMsg.textContent = 'Obrigado por nos avisar com antecedência! Esperamos te ver em breve na barbearia.';
+          }
+
+          successView.style.display = 'block';
+        } catch (e) {
+          alert('Erro ao cancelar: ' + e.message);
+          btnDoCancel.disabled = false;
+          btnDoCancel.textContent = 'Tentar novamente';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -6,6 +6,7 @@ const settingsController = require('../controllers/SettingsController');
 // Rotas de Agendamento
 router.get('/slots', (req, res) => appointmentController.getSlots(req, res));
 router.get('/appointments', (req, res) => appointmentController.listAppointments(req, res));
+router.get('/appointments/:id', (req, res) => appointmentController.getAppointmentById(req, res));
 router.post('/appointments', (req, res) => appointmentController.createAppointment(req, res));
 router.delete('/appointments/:id', (req, res) => appointmentController.cancelAppointment(req, res));
 

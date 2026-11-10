@@ -411,6 +411,7 @@
       dom.btnConfirmAppointment.textContent = 'Salvando agendamento...';
     }
 
+    let createdId = null;
     try {
       const response = await fetch(`${API_URL}/appointments`, {
         method: 'POST',
@@ -431,6 +432,9 @@
         const errorData = await response.json();
         throw new Error(errorData.error || 'Não foi possível confirmar o horário.');
       }
+
+      const resData = await response.json();
+      createdId = resData.booking?.id || resData.booking?._id;
     } catch (err) {
       console.warn('Aviso: Falha ao persistir no backend, seguindo via WhatsApp:', err.message);
     } finally {
@@ -440,6 +444,11 @@
       }
     }
 
+    // Link para o cliente gerenciar/cancelar caso precise
+    const manageLink = createdId 
+      ? `\n\n🔗 *Gerenciar/Desmarcar horário:*\n${window.location.origin}/cancelar.html?id=${createdId}`
+      : '';
+
     const text = 
       `Olá Biel! Gostaria de agendar um horário:\n\n` +
       `✂️ *Serviço:* ${serviceNames}\n` +
@@ -447,8 +456,9 @@
       `📅 *Data:* ${formatDateBR(state.bookingDate)}\n` +
       `⏰ *Horário:* ${state.bookingTime}\n\n` +
       `👤 *Cliente:* ${name}\n` +
-      `📱 *Contato:* ${phone}\n\n` +
-      `Pode confirmar na agenda?`;
+      `📱 *Contato:* ${phone}` +
+      manageLink +
+      `\n\nPode confirmar na agenda?`;
 
     const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 
