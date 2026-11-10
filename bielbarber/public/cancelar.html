@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
@@ -12,7 +13,9 @@
   <!-- Fontes Oficiais -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@600;700&display=swap"
+    rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
@@ -25,6 +28,7 @@
       padding: 20px 16px;
       background: #0D0D0D;
     }
+
     .cancel-card {
       background: var(--color-graphite);
       border: 1px solid var(--color-border);
@@ -35,6 +39,7 @@
       text-align: center;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
     }
+
     .cancel-icon {
       width: 60px;
       height: 60px;
@@ -46,10 +51,12 @@
       background: rgba(243, 146, 0, 0.12);
       color: var(--color-orange);
     }
+
     .cancel-icon.warning {
       background: rgba(255, 71, 87, 0.15);
       color: var(--color-error);
     }
+
     .info-list {
       background: #141414;
       border-radius: 10px;
@@ -61,23 +68,28 @@
       flex-direction: column;
       gap: 10px;
     }
+
     .info-item {
       display: flex;
       justify-content: space-between;
       border-bottom: 1px solid #222;
       padding-bottom: 8px;
     }
+
     .info-item:last-child {
       border-bottom: none;
       padding-bottom: 0;
     }
+
     .info-label {
       color: var(--color-gray);
     }
+
     .info-val {
       font-weight: 600;
       color: var(--color-ice);
     }
+
     .policy-box {
       border-radius: 10px;
       padding: 14px;
@@ -86,11 +98,13 @@
       margin-bottom: 20px;
       text-align: left;
     }
+
     .policy-box.free {
       background: rgba(46, 213, 115, 0.1);
       border: 1px solid rgba(46, 213, 115, 0.3);
       color: #7bed9f;
     }
+
     .policy-box.late {
       background: rgba(255, 71, 87, 0.12);
       border: 1px solid rgba(255, 71, 87, 0.4);
@@ -98,11 +112,15 @@
     }
   </style>
 </head>
+
 <body class="cancel-page">
 
   <div class="cancel-card" id="cancel-container">
     <div class="cancel-icon" id="status-icon">
-      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
     </div>
 
     <h1 style="font-family: var(--font-title); font-size: 1.5rem; text-transform: uppercase;" id="main-title">
@@ -142,11 +160,13 @@
         <!-- Texto dinâmico -->
       </div>
 
-      <button type="button" class="btn-primary" id="btn-do-cancel" style="width: 100%; background: #c0392b; border-color: #e74c3c;">
+      <button type="button" class="btn-primary" id="btn-do-cancel"
+        style="width: 100%; background: #c0392b; border-color: #e74c3c;">
         Confirmar Desmarcação
       </button>
 
-      <a href="index.html" class="btn-secondary" style="display: block; margin-top: 10px; width: 100%; text-decoration: none; padding: 12px;">
+      <a href="index.html" class="btn-secondary"
+        style="display: block; margin-top: 10px; width: 100%; text-decoration: none; padding: 12px;">
         Manter Meu Horário (Voltar)
       </a>
     </div>
@@ -256,7 +276,7 @@
               Como a desmarcação ocorreu em cima da hora, por gentileza entre em contato no WhatsApp do Biel para realizar o acerto da taxa de reserva.
             `;
             const textWa = `Olá Biel! Cancelei meu agendamento das ${currentBooking.startTime} de hoje em cima da hora e estou chamando para acertar o valor conforme a política da barbearia.`;
-            const waNumber = window.BIEL_CONFIG?.whatsappNumber || '5511964835563';
+            const waNumber = window.BIEL_CONFIG?.whatsappNumber || '551196483-5563';
             const btnWa = document.createElement('a');
             btnWa.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(textWa)}`;
             btnWa.target = '_blank';
@@ -279,5 +299,5 @@
     })();
   </script>
 </body>
-</html>
 
+</html>

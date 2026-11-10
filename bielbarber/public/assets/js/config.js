@@ -8,12 +8,12 @@ window.BIEL_CONFIG = Object.freeze({
   slogan: 'Estilo, atitude e confiança.',
 
   // URL da API Backend (em desenvolvimento local ou URL da nuvem)
-  apiUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-    ? 'http://localhost:3001/api' 
+  apiUrl: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3001/api'
     : '/api',
 
   // WhatsApp oficial do Biel (formato internacional sem caracteres especiais)
-  whatsappNumber: '5511964835563',
+  whatsappNumber: '551196483-5563',
 
   // Instagram oficial
   instagramHandle: 'bielcortes_oficial',

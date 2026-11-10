@@ -16,10 +16,10 @@
     if (adminServices) {
       SERVICES = JSON.parse(adminServices);
     }
-  } catch (e) {}
+  } catch (e) { }
 
   const GALLERY = CONFIG.gallery || [];
-  const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '5511964835563';
+  const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '551196483-5563';
 
   // Estado da Aplicação
   const state = {
@@ -147,8 +147,8 @@
 
     const filtered = SERVICES.filter(service => {
       const matchCat = category === 'todos' || service.category === category;
-      const matchQuery = !query || 
-        service.name.toLowerCase().includes(query) || 
+      const matchQuery = !query ||
+        service.name.toLowerCase().includes(query) ||
         service.description.toLowerCase().includes(query);
       return matchCat && matchQuery;
     });
@@ -315,7 +315,7 @@
 
         const savedBlocked = localStorage.getItem('biel_admin_blocked_slots');
         if (savedBlocked) blockedSlots = JSON.parse(savedBlocked);
-      } catch (e) {}
+      } catch (e) { }
 
       // Verifica se o dia selecionado é folga
       if (workingDays && Array.isArray(workingDays)) {
@@ -445,11 +445,11 @@
     }
 
     // Link para o cliente gerenciar/cancelar caso precise
-    const manageLink = createdId 
+    const manageLink = createdId
       ? `\n\n🔗 *Gerenciar/Desmarcar horário:*\n${window.location.origin}/cancelar.html?id=${createdId}`
       : '';
 
-    const text = 
+    const text =
       `Olá Biel! Gostaria de agendar um horário:\n\n` +
       `✂️ *Serviço:* ${serviceNames}\n` +
       `💰 *Valor:* ${formatMoney(totalPrice)}\n` +
