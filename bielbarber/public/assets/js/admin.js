@@ -320,30 +320,66 @@
     }
 
     list.forEach(app => {
+      const isPix = (app.paymentMethod || 'PIX') === 'PIX';
+      const isConfirmed = app.paymentStatus === 'CONFIRMADO_PELO_BIEL';
+
+      let badgeHtml = '';
+      if (isConfirmed) {
+        badgeHtml = `<span style="background: rgba(46, 213, 115, 0.2); color: #2ed573; border: 1px solid #2ed573; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">✓ PAGO CONFIRMADO</span>`;
+      } else if (isPix) {
+        badgeHtml = `<span style="background: rgba(243, 146, 0, 0.2); color: var(--color-orange); border: 1px solid var(--color-orange); font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">PIX - CONFERIR EXTRATO</span>`;
+      } else {
+        badgeHtml = `<span style="background: rgba(255, 255, 255, 0.1); color: var(--color-gray); border: 1px solid #444; font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; font-weight: 700;">PAGAR NA HORA</span>`;
+      }
+
       const card = document.createElement('div');
       card.className = 'admin-service-item';
-      card.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;';
+      card.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; border-left: 3px solid ' + (isConfirmed ? '#2ed573' : (isPix ? 'var(--color-orange)' : '#666')) + ';';
       card.innerHTML = `
         <div>
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <span style="background: var(--color-orange); color: #000; font-weight: 700; font-size: 0.8rem; padding: 2px 8px; border-radius: 4px;">
               ${escapeHTML(app.startTime || app.time)}
             </span>
             <strong style="color: var(--color-ice); font-size: 1.05rem;">${escapeHTML(app.clientName)}</strong>
+            ${badgeHtml}
           </div>
           <div style="font-size: 0.85rem; color: var(--color-gray); margin-top: 4px;">
             ✂️ ${escapeHTML(app.serviceName)} &bull; 💰 R$ ${Number(app.price || 0).toFixed(2)} &bull; 📱 ${escapeHTML(app.clientPhone)}
           </div>
         </div>
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; align-items: center;">
+          ${!isConfirmed ? `
+            <button type="button" class="btn-confirm-pay" data-id="${app._id || app.id}" style="background: #143521; border: 1px solid #2ed573; color: #2ed573; padding: 6px 10px; border-radius: 8px; font-size: 0.78rem; cursor: pointer;" title="Confirmar recebimento do dinheiro ou Pix">
+              ✓ Marcar Pago
+            </button>
+          ` : ''}
           <a href="https://wa.me/55${app.clientPhone.replace(/\D/g, '')}" target="_blank" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
             WhatsApp
           </a>
           <button type="button" class="btn-cancel-app" data-id="${app._id || app.id}" style="background: #331515; border: 1px solid var(--color-error); color: #ff6b6b; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
-            Desmarcar / Liberar
+            Desmarcar
           </button>
         </div>
       `;
+
+      // Evento de Marcar Pago
+      const btnConfirm = card.querySelector('.btn-confirm-pay');
+      if (btnConfirm) {
+        btnConfirm.addEventListener('click', async () => {
+          try {
+            await fetch(`${API_URL}/appointments/${app._id || app.id}/payment`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentStatus: 'CONFIRMADO_PELO_BIEL' })
+            });
+            showToast('Pagamento confirmado!');
+            loadAgenda();
+          } catch (e) {
+            alert('Erro: ' + e.message);
+          }
+        });
+      }
 
       card.querySelector('.btn-cancel-app').addEventListener('click', () => {
         handleCancelAppointment(app._id || app.id, app.clientName, app.startTime || app.time);

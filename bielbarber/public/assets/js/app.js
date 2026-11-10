@@ -34,6 +34,12 @@
 
   // Cache de Elementos
   const dom = {
+    pixModal: document.getElementById('pix-payment-modal'),
+    btnClosePixModal: document.getElementById('btn-close-pix-modal'),
+    pixQrImg: document.getElementById('pix-qr-img'),
+    pixModalAmount: document.getElementById('pix-modal-amount'),
+    btnCopyPix: document.getElementById('btn-copy-pix'),
+    btnFinishPix: document.getElementById('btn-finish-pix'),
     featuredContainer: document.getElementById('featured-cards-container'),
     servicesContainer: document.getElementById('services-catalog-container'),
     galleryContainer: document.getElementById('gallery-container'),
@@ -371,7 +377,54 @@
   }
 
   /**
-   * Confirmação salvando na API e abrindo WhatsApp
+   * Helper para gerar a payload do Pix Padrão Banco Central (BR Code EMV)
+   */
+  function generatePixPayload(key, name, city, amount, txid = 'BIELCORTES') {
+    function emv(id, value) {
+      const len = String(value.length).padStart(2, '0');
+      return `${id}${len}${value}`;
+    }
+
+    const cleanKey = key.replace(/\D/g, '');
+    const merchantAccount = 
+      emv('00', 'br.gov.bcb.pix') +
+      emv('01', cleanKey);
+
+    const formattedAmount = Number(amount).toFixed(2);
+
+    let payload = 
+      emv('00', '01') + // Format Indicator
+      emv('26', merchantAccount) +
+      emv('52', '0000') + // Merchant Category Code
+      emv('53', '986') + // Currency Real (986)
+      emv('54', formattedAmount) + // Amount
+      emv('58', 'BR') + // Country
+      emv('59', name.substring(0, 25).toUpperCase()) + // Name
+      emv('60', city.substring(0, 15).toUpperCase()) + // City
+      emv('62', emv('05', txid)) + // Additional Data (txid)
+      '6304'; // CRC16 placeholder
+
+    // Calcula CRC16 CCITT
+    let crc = 0xFFFF;
+    for (let i = 0; i < payload.length; i++) {
+      crc ^= (payload.charCodeAt(i) << 8);
+      for (let j = 0; j < 8; j++) {
+        if ((crc & 0x8000) !== 0) {
+          crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+        } else {
+          crc = (crc << 1) & 0xFFFF;
+        }
+      }
+    }
+    const crcHex = (crc & 0xFFFF).toString(16).toUpperCase().padStart(4, '0');
+    return payload + crcHex;
+  }
+
+  let activePixCode = '';
+  let pendingBookingData = null;
+
+  /**
+   * Confirmação salvando na API e abrindo WhatsApp ou Pix
    */
   async function confirmAppointment() {
     const name = dom.clientNameInput.value.trim();
@@ -400,6 +453,7 @@
       return;
     }
 
+    const paymentChoice = document.querySelector('input[name="payment-method-choice"]:checked')?.value || 'PIX';
     const serviceNames = state.selectedServices.map(s => s.name).join(' + ');
     const serviceIds = state.selectedServices.map(s => s.id).join('+') || 'corte';
     const totalPrice = state.selectedServices.reduce((sum, s) => sum + s.price, 0);
@@ -408,7 +462,7 @@
     // Desabilita botão enquanto processa
     if (dom.btnConfirmAppointment) {
       dom.btnConfirmAppointment.disabled = true;
-      dom.btnConfirmAppointment.textContent = 'Salvando agendamento...';
+      dom.btnConfirmAppointment.textContent = 'Reservando vaga...';
     }
 
     let createdId = null;
@@ -424,7 +478,8 @@
           price: totalPrice,
           date: state.bookingDate,
           time: state.bookingTime,
-          durationMinutes: totalDuration
+          durationMinutes: totalDuration,
+          paymentMethod: paymentChoice
         })
       });
 
@@ -436,36 +491,86 @@
       const resData = await response.json();
       createdId = resData.booking?.id || resData.booking?._id;
     } catch (err) {
-      console.warn('Aviso: Falha ao persistir no backend, seguindo via WhatsApp:', err.message);
+      console.warn('Aviso: Falha ao persistir no backend, seguindo:', err.message);
     } finally {
       if (dom.btnConfirmAppointment) {
         dom.btnConfirmAppointment.disabled = false;
-        dom.btnConfirmAppointment.innerHTML = 'Confirmar Agendamento <i class="ph-bold ph-arrow-right"></i>';
+        dom.btnConfirmAppointment.innerHTML = 'Continuar Agendamento <i class="ph-bold ph-arrow-right"></i>';
       }
     }
 
-    // Link para o cliente gerenciar/cancelar caso precise
-    const manageLink = createdId
-      ? `\n\n🔗 *Gerenciar/Desmarcar horário:*\n${window.location.origin}/cancelar.html?id=${createdId}`
+    // Dados para o fluxo de finalização
+    pendingBookingData = {
+      id: createdId,
+      name,
+      phone,
+      serviceNames,
+      totalPrice,
+      paymentChoice
+    };
+
+    // Se escolheu pagar via PIX, abre o modal do QR Code Pix
+    if (paymentChoice === 'PIX') {
+      closeModal();
+      openPixModal(totalPrice);
+    } else {
+      // Se for pagar no local, abre direto o WhatsApp informando
+      finalizeBookingOnWhatsApp(pendingBookingData);
+    }
+  }
+
+  function openPixModal(amount) {
+    if (!dom.pixModal) return;
+    const pixConfig = CONFIG.pix || {
+      key: '11964835563',
+      name: 'GABRIEL DOS SANTOS JERONIMO',
+      city: 'SAO BERNARDO DO CAMPO'
+    };
+
+    activePixCode = generatePixPayload(pixConfig.key, pixConfig.name, pixConfig.city, amount);
+    
+    // Gera QR Code via API de alta velocidade
+    if (dom.pixQrImg) {
+      dom.pixQrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(activePixCode)}`;
+    }
+    if (dom.pixModalAmount) {
+      dom.pixModalAmount.textContent = formatMoney(amount);
+    }
+
+    dom.pixModal.classList.add('open');
+  }
+
+  function finalizeBookingOnWhatsApp(data) {
+    const manageLink = data.id
+      ? `\n\n🔗 *Gerenciar/Desmarcar horário:*\n${window.location.origin}/cancelar.html?id=${data.id}`
       : '';
 
+    let paymentText = '';
+    if (data.paymentChoice === 'PIX') {
+      paymentText = `\n💳 *Pagamento:* Feito via Pix (Comprovante anexado)`;
+    } else {
+      paymentText = `\n💳 *Pagamento:* Acerto na barbearia (Dinheiro/Cartão)`;
+    }
+
     const text =
-      `Olá Biel! Gostaria de agendar um horário:\n\n` +
-      `✂️ *Serviço:* ${serviceNames}\n` +
-      `💰 *Valor:* ${formatMoney(totalPrice)}\n` +
+      `Olá Biel! Meu agendamento já está reservado no site:\n\n` +
+      `✂️ *Serviço:* ${data.serviceNames}\n` +
+      `💰 *Valor:* ${formatMoney(data.totalPrice)}\n` +
       `📅 *Data:* ${formatDateBR(state.bookingDate)}\n` +
       `⏰ *Horário:* ${state.bookingTime}\n\n` +
-      `👤 *Cliente:* ${name}\n` +
-      `📱 *Contato:* ${phone}` +
+      `👤 *Cliente:* ${data.name}\n` +
+      `📱 *Contato:* ${data.phone}` +
+      paymentText +
       manageLink +
       `\n\nPode confirmar na agenda?`;
 
     const cleanWaNumber = String(WHATSAPP_NUMBER).replace(/\D/g, '');
     const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent(text)}`;
 
-    showToast('Agendamento registrado! Abrindo WhatsApp...', 'success');
+    showToast('Agendamento salvo na agenda! Abrindo WhatsApp...', 'success');
     setTimeout(() => {
       window.open(waUrl, '_blank');
+      if (dom.pixModal) dom.pixModal.classList.remove('open');
       closeModal();
     }, 400);
   }
@@ -568,6 +673,43 @@
     // Confirmação
     if (dom.btnConfirmAppointment) {
       dom.btnConfirmAppointment.addEventListener('click', confirmAppointment);
+    }
+
+    // Eventos do Modal Pix
+    if (dom.btnClosePixModal) {
+      dom.btnClosePixModal.addEventListener('click', () => {
+        if (dom.pixModal) dom.pixModal.classList.remove('open');
+      });
+    }
+
+    if (dom.btnCopyPix) {
+      dom.btnCopyPix.addEventListener('click', () => {
+        if (!activePixCode) return;
+        navigator.clipboard.writeText(activePixCode).then(() => {
+          showToast('Código Pix copiado! Cole no seu banco.', 'success');
+          dom.btnCopyPix.textContent = '✓ Código Copiado!';
+          setTimeout(() => {
+            dom.btnCopyPix.textContent = '📋 Copiar Código Pix (Copia e Cola)';
+          }, 3000);
+        }).catch(() => {
+          // Fallback caso clipboard API falhe
+          const input = document.createElement('textarea');
+          input.value = activePixCode;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand('copy');
+          document.body.removeChild(input);
+          showToast('Código Pix copiado!', 'success');
+        });
+      });
+    }
+
+    if (dom.btnFinishPix) {
+      dom.btnFinishPix.addEventListener('click', () => {
+        if (pendingBookingData) {
+          finalizeBookingOnWhatsApp(pendingBookingData);
+        }
+      });
     }
 
     // ScrollSpy para navegação desktop e mobile & controle dinâmico do header e bottom-nav

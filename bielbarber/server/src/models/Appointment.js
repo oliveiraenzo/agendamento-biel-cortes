@@ -57,6 +57,17 @@ const appointmentSchema = new mongoose.Schema(
       enum: ['CONFIRMED', 'CANCELLED', 'CANCELED'],
       default: 'CONFIRMED',
       index: true
+    },
+    paymentMethod: {
+      type: String,
+      enum: ['PIX', 'NO_LOCAL'],
+      default: 'PIX'
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['PAGO_PELO_CLIENTE', 'PAGAR_NA_HORA', 'CONFIRMADO_PELO_BIEL'],
+      default: 'PAGO_PELO_CLIENTE',
+      index: true
     }
   },
   {

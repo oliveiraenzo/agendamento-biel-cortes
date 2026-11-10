@@ -450,17 +450,79 @@
           autocomplete="tel">
       </div>
 
+      <!-- 5. Forma de Pagamento -->
+      <div class="form-group">
+        <label class="form-label">5. Como prefere pagar?</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <label style="background: #191919; border: 2px solid var(--color-orange); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; text-align: center;">
+            <input type="radio" name="payment-method-choice" value="PIX" checked style="accent-color: var(--color-orange);">
+            <strong style="color: var(--color-ice); font-size: 0.9rem;">Pix Imediato</strong>
+            <span style="font-size: 0.75rem; color: var(--color-orange);">Gera QR Code</span>
+          </label>
+          <label style="background: #191919; border: 1px solid var(--color-border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; text-align: center;">
+            <input type="radio" name="payment-method-choice" value="NO_LOCAL" style="accent-color: var(--color-orange);">
+            <strong style="color: var(--color-ice); font-size: 0.9rem;">Na Barbearia</strong>
+            <span style="font-size: 0.75rem; color: var(--color-gray);">Dinheiro / Cartão</span>
+          </label>
+        </div>
+      </div>
+
       <button class="btn-primary" id="btn-confirm-appointment" type="button" style="margin-top: 8px;">
-        <span>Enviar e Confirmar no WhatsApp</span>
+        <span>Continuar Agendamento</span>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path
-            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+          <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
       </button>
 
       <p style="font-size: 0.78rem; text-align: center; color: var(--color-gray); margin-top: 4px;">
         Atendimento exclusivo com hora marcada diretamente com o Biel.
       </p>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       9.1 MODAL DE PAGAMENTO PIX & CONFIRMAÇÃO
+       ======================================================================= -->
+  <div class="modal-backdrop" id="pix-payment-modal" role="dialog" aria-modal="true" style="z-index: 1000;">
+    <div class="modal-content" style="max-width: 440px; text-align: center;">
+      <div class="modal-header" style="justify-content: flex-end;">
+        <button class="modal-close-btn" id="btn-close-pix-modal" type="button" aria-label="Fechar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div style="width: 50px; height: 50px; background: rgba(243, 146, 0, 0.15); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--color-orange); margin-bottom: 8px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </div>
+
+      <h3 style="font-family: var(--font-title); font-size: 1.35rem; text-transform: uppercase;">Pagamento via Pix</h3>
+      <p style="font-size: 0.85rem; color: var(--color-gray); margin: 4px 0 14px;">
+        Pague agora para garantir seu horário sem depender de aprovação manual.
+      </p>
+
+      <!-- QR Code Imagem Gerada -->
+      <div style="background: #fff; padding: 12px; border-radius: 12px; display: inline-block; margin-bottom: 12px;">
+        <img id="pix-qr-img" src="" alt="QR Code Pix" style="width: 180px; height: 180px; display: block;">
+      </div>
+
+      <div style="font-size: 1.35rem; font-family: var(--font-title); color: var(--color-orange); margin-bottom: 10px;" id="pix-modal-amount">
+        R$ 0,00
+      </div>
+
+      <div style="background: #141414; border: 1px solid var(--color-border); border-radius: 8px; padding: 8px 10px; font-size: 0.78rem; color: var(--color-gray); text-align: left; margin-bottom: 12px;">
+        <div><strong>Beneficiário:</strong> Gabriel dos Santos Jeronimo</div>
+        <div><strong>Chave:</strong> (11) 96483-5563</div>
+      </div>
+
+      <!-- Botão Copia e Cola -->
+      <button type="button" class="btn-secondary" id="btn-copy-pix" style="width: 100%; margin-bottom: 10px; padding: 10px; font-size: 0.85rem;">
+        📋 Copiar Código Pix (Copia e Cola)
+      </button>
+
+      <!-- Botão Já Fiz o Pix -->
+      <button type="button" class="btn-primary" id="btn-finish-pix" style="width: 100%; background: #25D366; border-color: #25D366;">
+        <span>✓ Já fiz o Pix! Enviar Comprovante</span>
+      </button>
     </div>
   </div>
 

@@ -134,7 +134,9 @@ class AppointmentService {
         startMinutes,
         endMinutes,
         durationMinutes: parseInt(durationMinutes, 10),
-        status: 'CONFIRMED'
+        status: 'CONFIRMED',
+        paymentMethod: bookingData.paymentMethod || 'PIX',
+        paymentStatus: bookingData.paymentMethod === 'NO_LOCAL' ? 'PAGAR_NA_HORA' : 'PAGO_PELO_CLIENTE'
       });
 
       await newAppointment.save();
@@ -211,6 +213,22 @@ class AppointmentService {
       };
     }
     throw { status: 503, message: 'Banco de dados indisponível.' };
+  }
+
+  /**
+   * Atualiza status de pagamento pelo Biel (ex: confirmou recebimento do Pix)
+   */
+  async updatePaymentStatus(appointmentId, paymentStatus) {
+    if (mongoose.connection.readyState === 1) {
+      const updated = await Appointment.findByIdAndUpdate(
+        appointmentId,
+        { paymentStatus },
+        { new: true }
+      );
+      if (!updated) throw { status: 404, message: 'Agendamento não encontrado.' };
+      return updated;
+    }
+    return { message: 'Operando sem banco' };
   }
 
   /**

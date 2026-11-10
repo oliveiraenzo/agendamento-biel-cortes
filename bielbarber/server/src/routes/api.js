@@ -8,6 +8,7 @@ router.get('/slots', (req, res) => appointmentController.getSlots(req, res));
 router.get('/appointments', (req, res) => appointmentController.listAppointments(req, res));
 router.get('/appointments/:id', (req, res) => appointmentController.getAppointmentById(req, res));
 router.post('/appointments', (req, res) => appointmentController.createAppointment(req, res));
+router.patch('/appointments/:id/payment', (req, res) => appointmentController.updatePayment(req, res));
 router.delete('/appointments/:id', (req, res) => appointmentController.cancelAppointment(req, res));
 
 // Rotas de Configurações (Painel Admin do Gabriel)

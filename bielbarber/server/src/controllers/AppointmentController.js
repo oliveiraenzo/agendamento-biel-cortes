@@ -81,6 +81,25 @@ class AppointmentController {
   }
 
   /**
+   * PATCH /api/appointments/:id/payment
+   * Atualiza status de pagamento (ex: Biel confere extrato e marca como recebido)
+   */
+  async updatePayment(req, res) {
+    try {
+      const { id } = req.params;
+      const { paymentStatus } = req.body;
+      const updated = await appointmentService.updatePaymentStatus(id, paymentStatus);
+      return res.status(200).json({
+        message: 'Status de pagamento atualizado!',
+        appointment: updated
+      });
+    } catch (error) {
+      if (error.status) return res.status(error.status).json({ error: error.message });
+      return res.status(500).json({ error: 'Erro ao atualizar pagamento.' });
+    }
+  }
+
+  /**
    * DELETE /api/appointments/:id
    * Cancela/remove um agendamento liberando a vaga para outro cliente
    */
