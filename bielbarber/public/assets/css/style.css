@@ -1798,6 +1798,20 @@ button {
   box-shadow: 0 0 10px var(--color-orange-glow);
 }
 
+/* Ícone do calendário destacado na mesma cor do Total (Laranja Oficial) */
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(65%) sepia(85%) saturate(1400%) hue-rotate(360deg) brightness(102%) contrast(105%);
+  opacity: 0.95;
+  transform: scale(1.15);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.25);
+}
+
 .time-slots-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
