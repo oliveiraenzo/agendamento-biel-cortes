@@ -521,6 +521,12 @@
 
   function openPixModal(amount) {
     if (!dom.pixModal) return;
+
+    // Oculta a barra flutuante para não disputar espaço com o modal
+    if (dom.floatingBar) {
+      dom.floatingBar.classList.remove('show');
+    }
+
     const pixConfig = CONFIG.pix || {
       key: '11964835563',
       name: 'GABRIEL DOS SANTOS JERONIMO',
