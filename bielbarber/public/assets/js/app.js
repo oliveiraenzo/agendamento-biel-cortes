@@ -19,7 +19,7 @@
   } catch (e) { }
 
   const GALLERY = CONFIG.gallery || [];
-  const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '551196483-5563';
+  const WHATSAPP_NUMBER = CONFIG.whatsappNumber || '551153549813';
 
   // Estado da Aplicação
   const state = {
@@ -528,7 +528,7 @@
     }
 
     const pixConfig = CONFIG.pix || {
-      key: '11964835563',
+      key: '1153549813',
       name: 'GABRIEL DOS SANTOS JERONIMO',
       city: 'SAO BERNARDO DO CAMPO'
     };

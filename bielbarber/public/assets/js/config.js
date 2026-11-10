@@ -14,13 +14,13 @@ window.BIEL_CONFIG = Object.freeze({
 
   // Dados do Pix Oficial (Banco Central EMV)
   pix: {
-    key: '11964835563', // Chave Pix (celular)
+    key: '1153549813', // Chave Pix (celular)
     name: 'GABRIEL DOS SANTOS JERONIMO',
     city: 'SAO BERNARDO DO CAMPO'
   },
 
   // WhatsApp oficial do Biel (formato internacional sem caracteres especiais)
-  whatsappNumber: '5511964835563',
+  whatsappNumber: '551153549813',
 
   // Instagram oficial
   instagramHandle: 'bielcortes_oficial',
