@@ -6,16 +6,16 @@ window.BIEL_CONFIG = Object.freeze({
   // Nome oficial e slogan
   brandName: 'Biel Cortes',
   slogan: 'Estilo, atitude e confiança.',
-  
+
   // WhatsApp oficial do Biel (formato internacional sem caracteres especiais)
   whatsappNumber: '5511999999999',
-  
+
   // Instagram oficial
   instagramHandle: 'bielcortes_oficial',
   instagramUrl: 'https://instagram.com/bielcortes_oficial',
 
   // Localização física e horários
-  address: 'Rua Augusta, 1500 - Consolação, São Paulo - SP',
+  address: 'Rua Francisco Mendes Pereira, 68 - Vila das Paineiras, São Bernardo do Campo - SP',
   workingHours: 'Segunda a Sábado das 09:00 às 19:00',
 
   // Catálogo Oficial com preços reais do Biel (agendamento a cada 30 min)
