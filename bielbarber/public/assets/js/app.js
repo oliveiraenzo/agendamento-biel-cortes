@@ -559,7 +559,7 @@
     }
 
     const text =
-      `Olá Biel! Meu agendamento já está reservado no site:\n\n` +
+      `Olá Biel! Meu corte já está agendado e confirmado no site:\n\n` +
       `✂️ *Serviço:* ${data.serviceNames}\n` +
       `💰 *Valor:* ${formatMoney(data.totalPrice)}\n` +
       `📅 *Data:* ${formatDateBR(state.bookingDate)}\n` +
@@ -567,8 +567,7 @@
       `👤 *Cliente:* ${data.name}\n` +
       `📱 *Contato:* ${data.phone}` +
       paymentText +
-      manageLink +
-      `\n\nPode confirmar na agenda?`;
+      manageLink;
 
     const cleanWaNumber = String(WHATSAPP_NUMBER).replace(/\D/g, '');
     const waUrl = `https://wa.me/${cleanWaNumber}?text=${encodeURIComponent(text)}`;
