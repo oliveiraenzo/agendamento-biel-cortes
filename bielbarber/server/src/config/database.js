@@ -8,7 +8,10 @@ const connectDatabase = async () => {
   }
 
   try {
-    await mongoose.connect(uri);
+    await mongoose.connect(uri, {
+      maxPoolSize: 5, // Limita conexões simultâneas para economizar RAM no plano 512 MB
+      serverSelectionTimeoutMS: 5000,
+    });
     console.log('✓ MongoDB Atlas conectado com sucesso.');
   } catch (error) {
     console.warn('! Aviso MongoDB: Operando em fallback local/sem banco.', error.message);

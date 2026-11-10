@@ -1,17 +1,40 @@
-require('dotenv').config();
-const app = require('./src/app');
+const express = require('express');
+const cors = require('cors');
+const apiRoutes = require('./src/routes/api');
 const connectDatabase = require('./src/config/database');
 
-const PORT = process.env.PORT || 3000;
+const app = express();
 
-// Inicializa Conexão com MongoDB
-connectDatabase();
+// Middlewares
+app.use(cors());
+app.use(express.json());
 
-// Inicia Servidor HTTP
-app.listen(PORT, () => {
-  console.log(`💈 Biel Cortes API rodando com sucesso na porta ${PORT}`);
-  console.log(`👉 Rotas ativas:`);
-  console.log(`   - GET  /api/health`);
-  console.log(`   - GET  /api/slots?date=YYYY-MM-DD&duration=MINUTES`);
-  console.log(`   - POST /api/appointments`);
+// Rotas da API
+app.use('/api', apiRoutes);
+
+// Rota raiz
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Biel Cortes API',
+    status: 'online',
+    version: '1.0.0'
+  });
 });
+
+const PORT = process.env.PORT || 3001;
+
+async function startServer() {
+  try {
+    await connectDatabase();
+    console.log('✅ Banco de dados MongoDB conectado.');
+    
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    });
+  } catch (err) {
+    console.error('❌ Falha ao iniciar servidor:', err.message);
+    process.exit(1);
+  }
+}
+
+startServer();

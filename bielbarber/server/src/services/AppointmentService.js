@@ -28,7 +28,9 @@ class AppointmentService {
       busyAppointments = await Appointment.find({
         date: dateStr,
         status: 'CONFIRMED'
-      }).select('startMinutes endMinutes');
+      })
+      .select('startMinutes endMinutes')
+      .lean();
     }
 
     // Intervalos de bloqueio (Almoço + Agendamentos já realizados)
@@ -162,6 +164,40 @@ class AppointmentService {
       endTime,
       durationMinutes: parseInt(durationMinutes, 10)
     };
+  }
+
+  /**
+   * Lista todos os agendamentos de uma data específica ou período (para o painel do Biel)
+   */
+  async getAppointmentsByDate(dateStr) {
+    if (mongoose.connection.readyState === 1) {
+      const query = { status: { $ne: 'CANCELED' } };
+      if (dateStr) {
+        query.date = dateStr;
+      }
+      return await Appointment.find(query)
+        .sort({ date: 1, startMinutes: 1 })
+        .lean();
+    }
+    return [];
+  }
+
+  /**
+   * Cancela/remove um agendamento liberando o horário no banco
+   */
+  async cancelAppointment(appointmentId) {
+    if (mongoose.connection.readyState === 1) {
+      const appointment = await Appointment.findByIdAndUpdate(
+        appointmentId,
+        { status: 'CANCELED' },
+        { new: true }
+      );
+      if (!appointment) {
+        throw { status: 404, message: 'Agendamento não encontrado.' };
+      }
+      return appointment;
+    }
+    return { message: 'Operando sem banco, cancelamento simulado.' };
   }
 }
 

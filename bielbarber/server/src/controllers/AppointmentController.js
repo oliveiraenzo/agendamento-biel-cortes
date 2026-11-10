@@ -44,6 +44,49 @@ class AppointmentController {
       return res.status(500).json({ error: 'Erro interno ao processar o agendamento.' });
     }
   }
+
+  /**
+   * GET /api/appointments
+   * Lista os agendamentos (filtro opcional por data: ?date=YYYY-MM-DD)
+   */
+  async listAppointments(req, res) {
+    try {
+      const { date } = req.query;
+      const appointments = await appointmentService.getAppointmentsByDate(date);
+      return res.status(200).json({
+        total: appointments.length,
+        appointments
+      });
+    } catch (error) {
+      console.error('Erro em listAppointments:', error);
+      return res.status(500).json({ error: 'Erro ao consultar agendamentos.' });
+    }
+  }
+
+  /**
+   * DELETE /api/appointments/:id
+   * Cancela/remove um agendamento liberando a vaga para outro cliente
+   */
+  async cancelAppointment(req, res) {
+    try {
+      const { id } = req.params;
+      if (!id) {
+        return res.status(400).json({ error: 'ID do agendamento é obrigatório.' });
+      }
+
+      const canceled = await appointmentService.cancelAppointment(id);
+      return res.status(200).json({
+        message: 'Agendamento cancelado com sucesso. O horário foi liberado!',
+        appointment: canceled
+      });
+    } catch (error) {
+      if (error.status) {
+        return res.status(error.status).json({ error: error.message });
+      }
+      console.error('Erro em cancelAppointment:', error);
+      return res.status(500).json({ error: 'Erro ao cancelar o agendamento.' });
+    }
+  }
 }
 
 module.exports = new AppointmentController();
