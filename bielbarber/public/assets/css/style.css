@@ -1522,10 +1522,16 @@ button {
    -------------------------------------------------------------------------- */
 .main-footer {
   width: 100%;
-  padding: var(--space-2xl) 0;
+  padding: var(--space-2xl) 0 calc(var(--bottom-nav-height) + var(--space-xl) + env(safe-area-inset-bottom, 0px));
   background: #080808;
   border-top: 1px solid var(--color-border);
   text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .main-footer {
+    padding: var(--space-2xl) 0;
+  }
 }
 
 .footer-container {

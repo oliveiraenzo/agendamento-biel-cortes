@@ -14,6 +14,8 @@
     BLOCKED_SLOTS: 'biel_admin_blocked_slots'
   };
 
+  const API_URL = window.BIEL_CONFIG?.apiUrl || 'http://localhost:3001/api';
+
   const ADMIN_PASSCODE = 'biel123';
 
   const DEFAULT_DAYS = [
@@ -79,6 +81,20 @@
     inputTimeEnd: document.getElementById('time-end'),
     slotsManagerGrid: document.getElementById('slots-manager-grid'),
     btnSaveHours: document.getElementById('btn-save-hours'),
+
+    // Painel 0: Agenda
+    agendaDateInput: document.getElementById('admin-agenda-date'),
+    btnRefreshAgenda: document.getElementById('btn-refresh-agenda'),
+    appointmentsList: document.getElementById('admin-appointments-list'),
+    btnAdminNewBooking: document.getElementById('btn-admin-new-booking'),
+    adminBookingModal: document.getElementById('admin-booking-modal'),
+    btnCloseAdminBooking: document.getElementById('btn-close-admin-booking'),
+    adminBookingForm: document.getElementById('admin-new-booking-form'),
+    adminBookName: document.getElementById('admin-book-name'),
+    adminBookPhone: document.getElementById('admin-book-phone'),
+    adminBookService: document.getElementById('admin-book-service'),
+    adminBookDate: document.getElementById('admin-book-date'),
+    adminBookTime: document.getElementById('admin-book-time'),
 
     // Toast
     toast: document.getElementById('admin-toast'),
@@ -161,6 +177,12 @@
     dom.loginView.classList.remove('active');
     dom.adminView.classList.add('active');
 
+    // Inicializa a data de hoje no filtro
+    if (dom.agendaDateInput && !dom.agendaDateInput.value) {
+      dom.agendaDateInput.value = new Date().toISOString().split('T')[0];
+    }
+
+    loadAgenda();
     renderPricesPanel();
     renderServicesPanel();
     renderDaysPanel();
@@ -220,6 +242,26 @@
     dom.btnSaveHours.addEventListener('click', handleSaveHours);
     dom.inputTimeStart.addEventListener('change', renderSlotsManager);
     dom.inputTimeEnd.addEventListener('change', renderSlotsManager);
+
+    // PAINEL 0: Agenda
+    if (dom.btnRefreshAgenda) {
+      dom.btnRefreshAgenda.addEventListener('click', loadAgenda);
+    }
+    if (dom.agendaDateInput) {
+      dom.agendaDateInput.addEventListener('change', loadAgenda);
+    }
+    if (dom.btnAdminNewBooking) {
+      dom.btnAdminNewBooking.addEventListener('click', openAdminBookingModal);
+    }
+    if (dom.btnCloseAdminBooking) {
+      dom.btnCloseAdminBooking.addEventListener('click', closeAdminBookingModal);
+    }
+    if (dom.adminBookDate) {
+      dom.adminBookDate.addEventListener('change', loadAdminAvailableSlots);
+    }
+    if (dom.adminBookingForm) {
+      dom.adminBookingForm.addEventListener('submit', handleAdminCreateBooking);
+    }
   }
 
   function handleLogin(e) {
@@ -239,6 +281,178 @@
     sessionStorage.removeItem(STORAGE_KEYS.AUTH);
     showLoginView();
     showToast('Sessão encerrada.');
+  }
+
+  // =========================================================================
+  // 0. PAINEL DE AGENDA (CARREGAR, CANCELAR E NOVO AGENDAMENTO)
+  // =========================================================================
+  async function loadAgenda() {
+    if (!dom.appointmentsList) return;
+    const date = dom.agendaDateInput ? dom.agendaDateInput.value : '';
+
+    dom.appointmentsList.innerHTML = '<div style="text-align: center; color: var(--color-gray); padding: 24px;">Carregando agendamentos...</div>';
+
+    try {
+      const url = date ? `${API_URL}/appointments?date=${date}` : `${API_URL}/appointments`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Falha ao buscar agendamentos');
+      const data = await res.json();
+      renderAppointments(data.appointments || []);
+    } catch (err) {
+      console.warn('Erro ao carregar agenda:', err.message);
+      dom.appointmentsList.innerHTML = `
+        <div style="text-align: center; color: var(--color-gray); padding: 24px;">
+          Nenhum agendamento encontrado no banco para esta data ou backend offline.
+        </div>
+      `;
+    }
+  }
+
+  function renderAppointments(list) {
+    dom.appointmentsList.innerHTML = '';
+    if (list.length === 0) {
+      dom.appointmentsList.innerHTML = `
+        <div style="text-align: center; color: var(--color-gray); padding: 28px; background: #141414; border-radius: 12px;">
+          Nenhum cliente agendado para este dia.
+        </div>
+      `;
+      return;
+    }
+
+    list.forEach(app => {
+      const card = document.createElement('div');
+      card.className = 'admin-service-item';
+      card.style.cssText = 'display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;';
+      card.innerHTML = `
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="background: var(--color-orange); color: #000; font-weight: 700; font-size: 0.8rem; padding: 2px 8px; border-radius: 4px;">
+              ${escapeHTML(app.startTime || app.time)}
+            </span>
+            <strong style="color: var(--color-ice); font-size: 1.05rem;">${escapeHTML(app.clientName)}</strong>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--color-gray); margin-top: 4px;">
+            ✂️ ${escapeHTML(app.serviceName)} &bull; 💰 R$ ${Number(app.price || 0).toFixed(2)} &bull; 📱 ${escapeHTML(app.clientPhone)}
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="https://wa.me/55${app.clientPhone.replace(/\D/g, '')}" target="_blank" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+            WhatsApp
+          </a>
+          <button type="button" class="btn-cancel-app" data-id="${app._id || app.id}" style="background: #331515; border: 1px solid var(--color-error); color: #ff6b6b; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">
+            Desmarcar / Liberar
+          </button>
+        </div>
+      `;
+
+      card.querySelector('.btn-cancel-app').addEventListener('click', () => {
+        handleCancelAppointment(app._id || app.id, app.clientName, app.startTime || app.time);
+      });
+
+      dom.appointmentsList.appendChild(card);
+    });
+  }
+
+  async function handleCancelAppointment(id, name, time) {
+    if (!confirm(`Deseja realmente desmarcar o agendamento de ${name} às ${time}? O horário será liberado imediatamente.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/appointments/${id}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('Erro ao desmarcar');
+      showToast('Horário desmarcado e liberado!');
+      loadAgenda();
+    } catch (err) {
+      alert('Erro ao cancelar: ' + err.message);
+    }
+  }
+
+  function openAdminBookingModal() {
+    if (!dom.adminBookingModal) return;
+    // Popula select de serviços
+    if (dom.adminBookService) {
+      dom.adminBookService.innerHTML = state.services.map(s => `
+        <option value="${s.id}" data-duration="${s.durationMinutes || 30}" data-price="${s.price}">
+          ${s.name} - R$ ${Number(s.price).toFixed(2)}
+        </option>
+      `).join('');
+    }
+
+    if (dom.adminBookDate) {
+      dom.adminBookDate.value = dom.agendaDateInput ? dom.agendaDateInput.value : new Date().toISOString().split('T')[0];
+      loadAdminAvailableSlots();
+    }
+
+    dom.adminBookingModal.classList.add('open');
+  }
+
+  function closeAdminBookingModal() {
+    if (dom.adminBookingModal) {
+      dom.adminBookingModal.classList.remove('open');
+    }
+  }
+
+  async function loadAdminAvailableSlots() {
+    const date = dom.adminBookDate.value;
+    if (!date || !dom.adminBookTime) return;
+
+    dom.adminBookTime.innerHTML = '<option value="">Buscando horários...</option>';
+    try {
+      const selectedOption = dom.adminBookService.options[dom.adminBookService.selectedIndex];
+      const duration = selectedOption ? selectedOption.getAttribute('data-duration') : 30;
+
+      const res = await fetch(`${API_URL}/slots?date=${date}&duration=${duration}`);
+      if (res.ok) {
+        const data = await res.json();
+        const slots = data.slots || [];
+        if (slots.length === 0) {
+          dom.adminBookTime.innerHTML = '<option value="">Nenhum horário livre neste dia</option>';
+        } else {
+          dom.adminBookTime.innerHTML = slots.map(t => `<option value="${t}">${t}</option>`).join('');
+        }
+      }
+    } catch (e) {
+      dom.adminBookTime.innerHTML = '<option value="09:00">09:00</option><option value="10:00">10:00</option><option value="14:00">14:00</option><option value="15:00">15:00</option>';
+    }
+  }
+
+  async function handleAdminCreateBooking(e) {
+    e.preventDefault();
+    const selectedOption = dom.adminBookService.options[dom.adminBookService.selectedIndex];
+    const duration = parseInt(selectedOption.getAttribute('data-duration') || '30', 10);
+    const price = parseFloat(selectedOption.getAttribute('data-price') || '0');
+
+    const payload = {
+      clientName: dom.adminBookName.value.trim(),
+      clientPhone: dom.adminBookPhone.value.trim(),
+      serviceId: dom.adminBookService.value,
+      serviceName: selectedOption.textContent.split('-')[0].trim(),
+      price: price,
+      date: dom.adminBookDate.value,
+      time: dom.adminBookTime.value,
+      durationMinutes: duration
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/appointments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Erro ao registrar');
+      }
+
+      showToast('Agendamento criado com sucesso!');
+      closeAdminBookingModal();
+      dom.adminBookingForm.reset();
+      loadAgenda();
+    } catch (err) {
+      alert('Aviso: ' + err.message);
+    }
   }
 
   // =========================================================================

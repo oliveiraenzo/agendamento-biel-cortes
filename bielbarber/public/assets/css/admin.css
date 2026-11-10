@@ -586,7 +586,8 @@
   padding: 16px;
 }
 
-.modal-backdrop.active {
+.modal-backdrop.active,
+.modal-backdrop.open {
   display: flex;
   animation: modalFadeIn 0.2s ease-out;
 }
