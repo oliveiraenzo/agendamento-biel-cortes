@@ -8,6 +8,7 @@
 
   const STORAGE_KEYS = {
     AUTH: 'biel_admin_auth',
+    TOKEN: 'biel_admin_token',
     SERVICES: 'biel_admin_services',
     WORKING_DAYS: 'biel_admin_working_days',
     WORKING_HOURS: 'biel_admin_working_hours',
@@ -15,6 +16,31 @@
   };
 
   const API_URL = window.BIEL_CONFIG?.apiUrl || 'https://agendamento-biel-cortes.onrender.com/api';
+
+  /**
+   * Helper para chamadas autenticadas com Bearer Token
+   */
+  async function authFetch(url, options = {}) {
+    const token = sessionStorage.getItem(STORAGE_KEYS.TOKEN);
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(url, { ...options, headers });
+    if (res.status === 401) {
+      // Token expirou ou é inválido -> redireciona para login
+      sessionStorage.removeItem(STORAGE_KEYS.AUTH);
+      sessionStorage.removeItem(STORAGE_KEYS.TOKEN);
+      showLoginView();
+      showToast('Sessão expirada. Entre novamente.');
+      throw new Error('Não autorizado');
+    }
+    return res;
+  }
 
   const ADMIN_PASSCODE = 'biel123';
 
@@ -377,7 +403,11 @@
       });
 
       if (res.ok) {
+        const data = await res.json();
         sessionStorage.setItem(STORAGE_KEYS.AUTH, 'true');
+        if (data.token) {
+          sessionStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
+        }
         dom.loginError.style.display = 'none';
         dom.passInput.value = '';
         showAdminView();
@@ -402,6 +432,7 @@
 
   function handleLogout() {
     sessionStorage.removeItem(STORAGE_KEYS.AUTH);
+    sessionStorage.removeItem(STORAGE_KEYS.TOKEN);
     showLoginView();
     showToast('Sessão encerrada.');
   }
@@ -417,7 +448,7 @@
 
     try {
       const url = date ? `${API_URL}/appointments?date=${date}` : `${API_URL}/appointments`;
-      const res = await fetch(url);
+      const res = await authFetch(url);
       if (!res.ok) throw new Error('Falha ao buscar agendamentos');
       const data = await res.json();
       renderAppointments(data.appointments || []);
@@ -529,9 +560,8 @@
           btnConfirm.disabled = true;
           btnConfirm.textContent = 'Gravando...';
           try {
-            await fetch(`${API_URL}/appointments/${app._id || app.id}/payment`, {
+            await authFetch(`${API_URL}/appointments/${app._id || app.id}/payment`, {
               method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ paymentStatus: 'CONFIRMADO_PELO_BIEL' })
             });
             showToast('Pagamento confirmado!');
@@ -552,9 +582,8 @@
           btnUnmark.textContent = 'Atualizando...';
           try {
             const previousStatus = isPix ? 'PAGO_PELO_CLIENTE' : 'PAGAR_NA_HORA';
-            await fetch(`${API_URL}/appointments/${app._id || app.id}/payment`, {
+            await authFetch(`${API_URL}/appointments/${app._id || app.id}/payment`, {
               method: 'PATCH',
-              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ paymentStatus: previousStatus })
             });
             showToast('Pagamento desmarcado!');
@@ -851,9 +880,8 @@
     localStorage.setItem(STORAGE_KEYS.WORKING_DAYS, JSON.stringify(state.workingDays));
 
     try {
-      await fetch(`${API_URL}/settings`, {
+      await authFetch(`${API_URL}/settings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ workingDays: state.workingDays })
       });
       showToast('Dias salvos no banco e aplicados aos clientes!');
@@ -916,9 +944,8 @@
     localStorage.setItem(STORAGE_KEYS.BLOCKED_SLOTS, JSON.stringify(state.blockedSlots));
 
     try {
-      await fetch(`${API_URL}/settings`, {
+      await authFetch(`${API_URL}/settings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           workingHours: state.workingHours,
           blockedSlots: state.blockedSlots

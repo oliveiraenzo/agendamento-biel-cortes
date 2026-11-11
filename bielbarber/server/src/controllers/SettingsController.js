@@ -1,4 +1,7 @@
 const Settings = require('../models/Settings');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../middlewares/authMiddleware');
 
 const DEFAULT_SERVICES = [
   {
@@ -129,18 +132,38 @@ class SettingsController {
 
   /**
    * POST /api/admin/login
-   * Valida a senha do Biel direto no banco
+   * Valida a senha do Biel com hash bcrypt e gera token JWT seguro de 7 dias
    */
   async login(req, res) {
     try {
       const { password } = req.body;
       let settings = await Settings.findOne({ key: 'main_settings' });
-      const validPass = settings?.adminPassword || 'biel123';
+      const storedPass = settings?.adminPassword || 'biel123';
 
-      if (password === validPass) {
-        return res.status(200).json({ success: true, message: 'Autenticado com sucesso!' });
+      // Suporta comparação com bcrypt hash ou fallback para senha legada
+      let isMatch = false;
+      if (storedPass.startsWith('$2a$') || storedPass.startsWith('$2b$')) {
+        isMatch = await bcrypt.compare(password, storedPass);
+      } else {
+        isMatch = (password === storedPass);
       }
-      return res.status(401).json({ success: false, error: 'Código de acesso incorreto.' });
+
+      if (!isMatch) {
+        return res.status(401).json({ success: false, error: 'Código de acesso incorreto.' });
+      }
+
+      // Gera Token JWT assinado criptograficamente
+      const token = jwt.sign(
+        { role: 'admin', email: settings?.adminEmail || 'bielcortes@gmail.com' },
+        JWT_SECRET,
+        { expiresIn: '7d' }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: 'Autenticado com sucesso!',
+        token
+      });
     } catch (e) {
       return res.status(500).json({ error: 'Erro na autenticação.' });
     }
@@ -203,7 +226,11 @@ class SettingsController {
         return res.status(400).json({ error: 'Código de recuperação expirou. Solicite um novo.' });
       }
 
-      settings.adminPassword = newPassword;
+      // Criptografa a nova senha com bcrypt (10 rounds de salt)
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+      settings.adminPassword = hashedPassword;
       settings.resetToken = null;
       settings.resetTokenExpires = null;
       await settings.save();
