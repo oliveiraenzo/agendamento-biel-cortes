@@ -6,7 +6,9 @@ yarn-error.log*
 
 # Variáveis de ambiente sensíveis
 .env
-.env.local
+.env.*
+*.env
+**/.env
 
 # Sistema operacional
 .DS_Store
