@@ -51,6 +51,7 @@
     btnOpenBookingModal: document.getElementById('btn-open-booking-modal'),
     modalOverlay: document.getElementById('booking-modal-overlay'),
     btnCloseModal: document.getElementById('btn-close-modal'),
+    modalServicesChips: document.getElementById('modal-services-chips-container'),
     modalServiceName: document.getElementById('modal-service-name'),
     modalServiceDuration: document.getElementById('modal-service-duration'),
     modalServicePrice: document.getElementById('modal-service-price'),
@@ -252,6 +253,60 @@
   }
 
   /**
+   * Renderiza os chips de serviços dentro do modal de agendamento permitindo remoção
+   */
+  function renderModalServices() {
+    if (!dom.modalServicesChips) return;
+    dom.modalServicesChips.innerHTML = '';
+
+    if (state.selectedServices.length === 0) {
+      dom.modalServicesChips.innerHTML = '<span style="color: var(--color-error); font-size: 0.82rem;">Nenhum serviço selecionado. Adicione pelo menos um corte no catálogo.</span>';
+      dom.modalServicePrice.textContent = formatMoney(0);
+      if (dom.btnConfirmAppointment) dom.btnConfirmAppointment.disabled = true;
+      return;
+    }
+
+    if (dom.btnConfirmAppointment) dom.btnConfirmAppointment.disabled = false;
+    const totalPrice = state.selectedServices.reduce((sum, s) => sum + s.price, 0);
+    dom.modalServicePrice.textContent = formatMoney(totalPrice);
+
+    state.selectedServices.forEach(service => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; border: 1px solid var(--color-border); border-radius: 8px; padding: 6px 10px;';
+      row.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 0.88rem; color: var(--color-ice); font-weight: 600;">${service.name}</span>
+          <span style="font-size: 0.8rem; color: var(--color-orange); font-weight: 700;">${formatMoney(service.price)}</span>
+        </div>
+        <button type="button" class="btn-remove-modal-service" data-id="${service.id}" style="background: none; border: none; color: var(--color-gray); cursor: pointer; padding: 2px 6px; font-size: 1.1rem; line-height: 1;" title="Remover este serviço">
+          &times;
+        </button>
+      `;
+
+      row.querySelector('.btn-remove-modal-service').addEventListener('click', () => {
+        // Remove o serviço do estado
+        state.selectedServices = state.selectedServices.filter(s => s.id !== service.id);
+        
+        // Atualiza a barra flutuante e os cards do catálogo na página
+        updateFloatingBar();
+        renderServicesCatalog();
+        if (state.activeCategory) renderFeaturedCards(state.activeCategory);
+
+        // Se removeu o último, fecha o modal ou exibe aviso
+        if (state.selectedServices.length === 0) {
+          closeModal();
+          showToast('Nenhum serviço selecionado.', 'info');
+        } else {
+          renderModalServices();
+          if (state.bookingDate) renderTimeSlots(state.bookingDate);
+        }
+      });
+
+      dom.modalServicesChips.appendChild(row);
+    });
+  }
+
+  /**
    * Abre o Modal de Agendamento
    */
   function openModal() {
@@ -260,14 +315,7 @@
       updateFloatingBar();
     }
 
-    const totalPrice = state.selectedServices.reduce((sum, s) => sum + s.price, 0);
-    const names = state.selectedServices.map(s => s.name).join(' + ');
-
-    dom.modalServiceName.textContent = names;
-    if (dom.modalServiceDuration) {
-      dom.modalServiceDuration.textContent = '30 min';
-    }
-    dom.modalServicePrice.textContent = formatMoney(totalPrice);
+    renderModalServices();
 
     const now = new Date();
     if (now.getHours() >= 18) now.setDate(now.getDate() + 1);

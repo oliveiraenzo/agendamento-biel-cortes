@@ -411,15 +411,17 @@
         </button>
       </div>
 
-      <!-- Resumo dos Serviços -->
+      <!-- Resumo dos Serviços com opção de remoção -->
       <div class="booking-summary-box">
-        <div class="summary-item-row">
-          <span style="color: var(--color-gray);">Serviço:</span>
-          <strong id="modal-service-name" style="color: var(--color-ice); text-align: right;">Corte</strong>
+        <div style="font-size: 0.8rem; color: var(--color-gray); text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+          Serviços Selecionados:
         </div>
-        <div class="summary-item-row total">
+        <div id="modal-services-chips-container" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px;">
+          <!-- Chips com botão X injetados via JS -->
+        </div>
+        <div class="summary-item-row total" style="border-top: 1px solid var(--color-border); padding-top: 8px; margin-top: 4px;">
           <span>Total:</span>
-          <span id="modal-service-price">R$ 35,00</span>
+          <span id="modal-service-price">R$ 0,00</span>
         </div>
       </div>
 
